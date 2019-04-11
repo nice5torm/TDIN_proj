@@ -664,33 +664,36 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mariana\\.nuget\\packages\\": {},
+    "C:\\Users\\eleit\\.nuget\\packages\\": {},
+    "C:\\ProgramData\\Xamarin\\NuGet\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
-    "restoreSettings": {
-      "hideWarningsAndErrors": true
-    },
     "restore": {
-      "projectUniqueName": "D:\\Users\\Mariana\\Desktop\\TDIN_proj\\ProjTDIN\\Central\\Central.csproj",
+      "projectUniqueName": "D:\\Projects\\Mariana\\ProjTDIN\\Central\\Central.csproj",
       "projectName": "Central",
-      "projectPath": "D:\\Users\\Mariana\\Desktop\\TDIN_proj\\ProjTDIN\\Central\\Central.csproj",
-      "packagesPath": "C:\\Users\\Mariana\\.nuget\\packages\\",
-      "outputPath": "D:\\Users\\Mariana\\Desktop\\TDIN_proj\\ProjTDIN\\Central\\obj\\",
+      "projectPath": "D:\\Projects\\Mariana\\ProjTDIN\\Central\\Central.csproj",
+      "packagesPath": "C:\\Users\\eleit\\.nuget\\packages\\",
+      "outputPath": "D:\\Projects\\Mariana\\ProjTDIN\\Central\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "C:\\ProgramData\\Xamarin\\NuGet\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Mariana\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\eleit\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 18.1.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\DevExpress 18.1\\Components\\System\\Components\\Packages": {},
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://ambidata-prd-vsts.pkgs.visualstudio.com/_packaging/DigitalLabs/nuget/v3/index.json": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -709,7 +712,7 @@
         "dependencies": {
           "Microsoft.NETCore.App": {
             "target": "Package",
-            "version": "2.0",
+            "version": "[2.0.0, )",
             "autoReferenced": true
           }
         },
