@@ -42,11 +42,61 @@ namespace TDIN_Project
         #endregion
 
         #region Order
+        public List<Order> GetOrders()
+        {
+            return orders;
+        }
 
+        public Order GetOrder(int id)
+        {
+            return orders.Where(o => o.Id == id).FirstOrDefault();
+        }
+
+        public void InsertOrder(Order order)
+        {
+            orders.Add(order);
+        }
+
+        public void UpdateOrder(Order order)
+        {
+            DeleteOrder(order.Id);
+            InsertOrder(order);
+        }
+
+        public void DeleteOrder(int id)
+        {
+            Order order = GetOrder(id);
+            orders.Remove(order);
+        }
         #endregion
 
         #region Item
+        public List<Item> GetItems()
+        {
+            return items;
+        }
 
+        public Item GetItem(int id)
+        {
+            return items.Where(i => i.Id == id).FirstOrDefault();
+        }
+
+        public void InsertItem(Item item)
+        {
+            items.Add(item);
+        }
+
+        public void Updateitem(Item item)
+        {
+            DeleteItem(item.Id);
+            InsertItem(item);
+        }
+
+        public void DeleteItem(int id)
+        {
+            Item item = GetItem(id);
+            items.Remove(item);
+        }
         #endregion
     }
 }

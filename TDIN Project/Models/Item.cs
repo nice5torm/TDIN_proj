@@ -16,5 +16,7 @@ namespace TDIN_Project.Models
         }
 
         public int Id { get; set; }
+
+        public double Price { get; set; }
     }
 }
