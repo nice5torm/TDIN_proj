@@ -9,7 +9,7 @@ namespace KitchenBar
     static class Program
     {
         /// <summary>
-        /// The main entry point for the application.
+        /// Ponto de entrada principal para o aplicativo.
         /// </summary>
         [STAThread]
         static void Main()
