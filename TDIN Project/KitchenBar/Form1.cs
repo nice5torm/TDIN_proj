@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDIN_Project;
+
 
 namespace KitchenBar
 {
@@ -36,12 +38,12 @@ namespace KitchenBar
 
         private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            checkedListBox1.Items.AddRange(DatabaseManager.getOrdersPending());
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            checkedListBox1.Items.AddRange(DatabaseManager.getOrdersInPreparation());
         }
 
         private void button1_Click(object sender, EventArgs e)

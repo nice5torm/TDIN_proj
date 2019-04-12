@@ -18,6 +18,12 @@ namespace TDIN_Project
             return tables;
         }
 
+        //a ver
+        public Table GetTablesUnpaid()
+        {
+            return tables.Where(t => t.TableStatus == Unpaid);
+        }
+
         public Table GetTable(int id)
         {
             return tables.Where(t => t.Id == id).FirstOrDefault();
@@ -47,6 +53,26 @@ namespace TDIN_Project
             return orders;
         }
 
+        public List<Order> GetOrdersPending()
+        {
+            return orders.Where(o => o.OrderStatus == Pending);
+        }
+
+        public List<Order> GetOrdersInPreparation()
+        {
+            return orders.Where(o => o.OrderStatus == InPreparation);
+        }
+
+        public List<Order> GetOrdersReady()
+        {
+            return orders.Where(o => o.OrderStatus == Ready);
+        }
+
+        public List<Order> GetOrdersDone()
+        {
+            return orders.Where(o => o.OrderStatus == Done);
+        }
+
         public Order GetOrder(int id)
         {
             return orders.Where(o => o.Id == id).FirstOrDefault();
@@ -57,10 +83,19 @@ namespace TDIN_Project
             orders.Add(order);
         }
 
-        public void UpdateOrder(Order order)
+        public void UpdateOrderToInPreparation(Order order)
         {
-            DeleteOrder(order.Id);
-            InsertOrder(order);
+
+        }
+
+        public void UpdateOrderToReady(Order order)
+        {
+
+        }
+
+        public void UpdateOrderToDone(Order order)
+        {
+
         }
 
         public void DeleteOrder(int id)

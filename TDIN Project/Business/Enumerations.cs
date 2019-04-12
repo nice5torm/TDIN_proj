@@ -18,12 +18,13 @@ namespace TDIN_Project.Business
         {
             Pending,
             InPreparation,
-            Ready
+            Ready,
+            Done
         }
 
         public enum TableStatusEnum
         {
-            //questionar isto
+            //???
             Unpaid,
             Paid
         }

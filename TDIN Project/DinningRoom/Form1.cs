@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TDIN_Project.Models;
+using TDIN_Project;
 
 namespace DinningRoom
 {
@@ -25,27 +25,27 @@ namespace DinningRoom
 
         private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            checkedListBox1.Items.AddRange(DatabaseManager.getItems());
         }
 
         private void checkedListBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            checkedListBox1.Items.AddRange(DatabaseManager.getOrdersReady());
         }
 
         private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+        {            
+            checkedListBox1.Items.AddRange(DatabaseManager.getOrdersDone());
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            checkedListBox1.Items.AddRange(DatabaseManager.getTables());
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            checkedListBox1.Items.AddRange(DatabaseManager.getTablesUnPaid());
         }
 
         private void button1_Click(object sender, EventArgs e)
