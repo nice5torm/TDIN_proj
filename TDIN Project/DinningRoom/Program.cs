@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Remoting;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace DinningRoom
         [STAThread]
         static void Main()
         {
+            RemotingConfiguration.Configure("DinningRoom.exe.config", false);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

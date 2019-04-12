@@ -52,7 +52,6 @@
             this.groupBox3.TabIndex = 13;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Pending";
-            this.groupBox3.Enter += new System.EventHandler(this.groupBox3_Enter_1);
             // 
             // listBox1
             // 
@@ -62,6 +61,7 @@
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(124, 160);
             this.listBox1.TabIndex = 11;
+            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -72,7 +72,6 @@
             this.label4.Size = new System.Drawing.Size(119, 20);
             this.label4.TabIndex = 10;
             this.label4.Text = "Pending Orders";
-            this.label4.Click += new System.EventHandler(this.label4_Click_1);
             // 
             // button2
             // 
@@ -84,6 +83,7 @@
             this.button2.TabIndex = 6;
             this.button2.Text = "Being Prepared";
             this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // groupBox1
             // 
@@ -97,7 +97,6 @@
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Prepared";
-            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // listBox2
             // 
@@ -107,6 +106,7 @@
             this.listBox2.Name = "listBox2";
             this.listBox2.Size = new System.Drawing.Size(124, 160);
             this.listBox2.TabIndex = 11;
+            this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -128,6 +128,7 @@
             this.button1.TabIndex = 6;
             this.button1.Text = "Done";
             this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
@@ -137,7 +138,6 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox3);
             this.Name = "Form1";
-            this.Text = "KitchenBar";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
