@@ -19,7 +19,7 @@ namespace TDIN_Project
         }
 
         //a ver
-        public Table GetTablesUnpaid()
+        public List<Table> GetTablesUnpaid()
         {
             return tables.Where(t => t.TableStatus == Unpaid);
         }
@@ -80,7 +80,7 @@ namespace TDIN_Project
 
         public void InsertOrder(Order order)
         {
-            orders.Add(order);
+            orders.Add(order.Where(o => o.OrderStatus == Pending) );
         }
 
         public void UpdateOrderToInPreparation(Order order)
