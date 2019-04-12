@@ -20,6 +20,8 @@ namespace TDIN_Project.Models
 
         public Enumerations.OrderTypeEnum OrderType { get; set; }
 
+        public Enumerations.OrderStatusEnum OrderStatus { get; set; }
+
         public List<Item> Items { get; set; } = new List<Item>();
     }
 }

@@ -13,5 +13,19 @@ namespace TDIN_Project.Business
             Kitchen,
             Bar
         }
+
+        public enum OrderStatusEnum
+        {
+            Pending,
+            InPreparation,
+            Ready
+        }
+
+        public enum TableStatusEnum
+        {
+            //questionar isto
+            Unpaid,
+            Paid
+        }
     }
 }
