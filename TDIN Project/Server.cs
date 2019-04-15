@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace TDIN_Project
 {
-    class Program
+    class Server
     {
         static void Main(string[] args)
         {
             RemotingConfiguration.Configure("Server.exe.config", false);
+
+            Console.WriteLine("Welcome to the server \n Press return to exit");
+            Console.ReadLine();
         }
     }
 }

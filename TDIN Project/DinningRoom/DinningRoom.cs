@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace DinningRoom
 {
-    static class Program
+    static class DinningRoom
     {
         /// <summary>
         /// Ponto de entrada principal para o aplicativo.
@@ -16,6 +16,9 @@ namespace DinningRoom
         static void Main()
         {
             RemotingConfiguration.Configure("DinningRoom.exe.config", false);
+
+            Calc c = new Calc();
+            Accumulator a = new Accumulator();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
