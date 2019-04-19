@@ -14,6 +14,8 @@ namespace Models
         public Table()
         {
             Id = IdCounter++;
+            TableStatus = TableStatusEnum.Unpaid;
+            Orders = new List<Order>();
         }
 
         public int Id { get; set; }
@@ -25,7 +27,6 @@ namespace Models
 
     public enum TableStatusEnum
     {
-        //???
         Unpaid,
         Paid
     }

@@ -10,24 +10,21 @@ namespace Models
     {
         private static int IdCounter = 1;
 
-        public Order()
+        public Order(OrderStatusEnum orderStatus, OrderTypeEnum orderType, List<Item> items)
         {
             Id = IdCounter++;
+            OrderStatus = orderStatus;
+            OrderType = orderType;
+            Items = items; 
         }
 
         public int Id { get; set; }
 
-        public OrderTypeEnum OrderType { get; set; }
-
         public OrderStatusEnum OrderStatus { get; set; }
 
-        public List<Item> Items { get; set; } = new List<Item>();
-    }
+        public OrderTypeEnum OrderType { get; set; }
 
-    public enum OrderTypeEnum
-    {
-        Kitchen,
-        Bar
+        public List<Item> Items { get; set; } = new List<Item>();
     }
 
     public enum OrderStatusEnum
@@ -37,6 +34,10 @@ namespace Models
         Ready,
         Done
     }
+    public enum OrderTypeEnum
+    {
+        Kitchen,
+        Bar
+    }
 
-   
 }
