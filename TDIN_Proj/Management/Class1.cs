@@ -39,10 +39,10 @@ namespace Management
         }
 
         //a ver
-        public List<Table> GetTablesUnpaid()
-        {
-            return tables.Where(t => t.TableStatus == TableStatusEnum.Unpaid ); //unpaid
-        }
+        //public List<Table> GetTablesUnpaid()
+        //{
+        //    return tables.Where(t => t.TableStatus == TableStatusEnum.Unpaid ); //unpaid
+        //}
 
         public Table GetTable(int id)
         {

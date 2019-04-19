@@ -4,16 +4,23 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Models.Class1;
 
 namespace KitchenBar
 {
     public partial class Choice : Form
     {
+        IManagement listServer;
+
         public Choice()
         {
+            RemotingConfiguration.Configure("KitchenBar.exe.config", false);
+            //listServer = (IManagement)RemoteNew.New(typeof(IManagement));
+
             InitializeComponent();
         }
 

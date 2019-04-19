@@ -9,19 +9,21 @@ using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Models.Class1;
 
 namespace DinningRoom
 {
     public partial class Form1 : Form
     {
         ArrayList items;
+        IManagement listServer;
 
 
         public Form1()
         {
             RemotingConfiguration.Configure("DinningRoom.exe.config", false);
-            listServer = (Management)RemoteNew.New(typeof(Management));
-            items = listServer.GetList();
+            listServer = (IManagement)RemoteNew.New(typeof(IManagement));
+            //items = listServer.GetList();
             InitializeComponent();
         }
 
@@ -63,6 +65,28 @@ namespace DinningRoom
         private void button2_Click(object sender, EventArgs e)
         {
 
+        }
+    }
+
+    class RemoteNew
+    {
+        private static Hashtable types = null;
+
+        private static void InitTypeTable()
+        {
+            types = new Hashtable();
+            foreach (WellKnownClientTypeEntry entry in RemotingConfiguration.GetRegisteredWellKnownClientTypes())
+                types.Add(entry.ObjectType, entry);
+        }
+
+        public static object New(Type type)
+        {
+            if (types == null)
+                InitTypeTable();
+            WellKnownClientTypeEntry entry = (WellKnownClientTypeEntry)types[type];
+            if (entry == null)
+                throw new RemotingException("Type not found!");
+            return RemotingServices.Connect(type, entry.ObjectUrl);
         }
     }
 }
