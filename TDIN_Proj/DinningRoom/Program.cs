@@ -17,7 +17,7 @@ namespace DinningRoom
         [STAThread]
         static void Main()
         {
-            ListServer = (IManagement)Activator.GetObject(typeof(IManagement), "tcp://localhost:9000/Server/OrdersServer"); //?
+            ListServer = (IManagement)Activator.GetObject(typeof(IManagement), "tcp://localhost:9000/Server/ListServer"); //?
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
