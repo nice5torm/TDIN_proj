@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A97D8EAE-7194-4575-A4D4-DA3E879DDBBB}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>TDIN_Proj</RootNamespace>
-    <AssemblyName>TDIN_Proj</AssemblyName>
+    <RootNamespace>Server</RootNamespace>
+    <AssemblyName>Server</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
