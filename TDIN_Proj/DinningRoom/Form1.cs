@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Models;
-using static Models.Class1; 
 
 namespace DinningRoom
 {
@@ -18,18 +17,16 @@ namespace DinningRoom
     {
         List<Item> items;
         List<Table> tables;
-        IManagement listServer;
         
 
         public Form1()
         {
-            RemotingConfiguration.Configure("DinningRoom.exe.config", false);
-            listServer = (IManagement)RemoteNew.New(typeof(IManagement));
-            items = listServer.GetItems();
-            tables = listServer.GetTables();
+            //RemotingConfiguration.Configure("DinningRoom.exe.config", false);
+            items = DinningRoom.listServer.GetItems();
+            tables = DinningRoom.listServer.GetTables();
 
-            List<Table> payableTables = listServer.GetPayableTables();
-            List<Order> ordersReady = listServer.GetOrdersReady();
+            List<Table> payableTables = DinningRoom.listServer.GetPayableTables();
+            List<Order> ordersReady = DinningRoom.listServer.GetOrdersReady();
 
             foreach(Item i in items)
             {
@@ -71,25 +68,25 @@ namespace DinningRoom
                 }
             }
 
-            listServer.InsertOrder(selectedTable, selectedItems);
+            DinningRoom.listServer.InsertOrder(selectedTable, selectedItems);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             foreach(CheckedListBox.SelectedObjectCollection so in checkedListBox2.SelectedItems)
             {
-                listServer.UpdateOrderToDone(listServer.GetOrdersReady().Where(or => or.Id.ToString() == so.ToString()).First());
+                DinningRoom.listServer.UpdateOrderToDone(DinningRoom.listServer.GetOrdersReady().Where(or => or.Id.ToString() == so.ToString()).First());
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            listServer.PayTable(tables.Where(t => t.Id.ToString() == comboBox2.SelectedItem.ToString()).First());
+            DinningRoom.listServer.PayTable(tables.Where(t => t.Id.ToString() == comboBox2.SelectedItem.ToString()).First());
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            List<Order> ordersDonebyTable = listServer.GetOrdersDone(tables.Where(t => t.Id.ToString() == comboBox2.SelectedItem.ToString()).First());
+            List<Order> ordersDonebyTable = DinningRoom.listServer.GetOrdersDone(tables.Where(t => t.Id.ToString() == comboBox2.SelectedItem.ToString()).First());
 
             foreach (Order odt in ordersDonebyTable)
             {
@@ -98,25 +95,4 @@ namespace DinningRoom
         }
     }
 
-    class RemoteNew
-    {
-        private static Hashtable types = null;
-
-        private static void InitTypeTable()
-        {
-            types = new Hashtable();
-            foreach (WellKnownClientTypeEntry entry in RemotingConfiguration.GetRegisteredWellKnownClientTypes())
-                types.Add(entry.ObjectType, entry);
-        }
-
-        public static object New(Type type)
-        {
-            if (types == null)
-                InitTypeTable();
-            WellKnownClientTypeEntry entry = (WellKnownClientTypeEntry)types[type];
-            if (entry == null)
-                throw new RemotingException("Type not found!");
-            return RemotingServices.Connect(type, entry.ObjectUrl);
-        }
-    }
 }
