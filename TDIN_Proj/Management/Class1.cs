@@ -62,11 +62,6 @@ namespace Management
             return tables.Where(t => t.Id == id).FirstOrDefault();
         }
 
-        public void AddOrderTable(Order order, Table table)
-        {
-            table.Orders.Add(order); 
-        }
-
         public List<Table> GetPayableTables()
         {
             return tables.Where(t => t.TableStatus == TableStatusEnum.HasUnpaidOrder && t.Orders.Count() == t.Orders.Where(o => o.OrderStatus == OrderStatusEnum.Done).Count()).ToList();

@@ -9,20 +9,22 @@ using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Models.Class1;
+using Models;
+using static Models.Class1; 
+
 namespace DinningRoom
 {
     public partial class Form1 : Form
     {
-        ArrayList items;
+        List<Item> items;
         IManagement listServer;
-
+        
 
         public Form1()
         {
             RemotingConfiguration.Configure("DinningRoom.exe.config", false);
             listServer = (IManagement)RemoteNew.New(typeof(IManagement));
-            //items = listServer.GetList();
+            items = listServer.GetItems();
             InitializeComponent();
         }
 
