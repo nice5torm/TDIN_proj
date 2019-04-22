@@ -12,6 +12,8 @@ namespace Models
         public interface IManagement
         {
             List<Table> GetTables();
+
+
         }
 
     }

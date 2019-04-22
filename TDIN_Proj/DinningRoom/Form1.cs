@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Models.Class1;
-
 namespace DinningRoom
 {
     public partial class Form1 : Form
@@ -54,7 +53,7 @@ namespace DinningRoom
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            //payabletables
         }
 
         private void listBox2_SelectedIndexChanged(object sender, EventArgs e)

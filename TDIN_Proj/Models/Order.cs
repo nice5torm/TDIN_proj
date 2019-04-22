@@ -10,10 +10,10 @@ namespace Models
     {
         private static int IdCounter = 1;
 
-        public Order(OrderStatusEnum orderStatus, OrderTypeEnum orderType, List<Item> items)
+        public Order(OrderTypeEnum orderType, List<Item> items)
         {
             Id = IdCounter++;
-            OrderStatus = orderStatus;
+            OrderStatus = OrderStatusEnum.Pending;
             OrderType = orderType;
             Items = items; 
         }
