@@ -51,11 +51,6 @@ namespace Management
             return tables;
         }
 
-        //a ver
-        public List<Table> GetTablesUnpaid()
-        {
-            return tables.Where(t => t.TableStatus == TableStatusEnum.HasUnpaidOrder).ToList();   
-        }
 
         public Table GetTable(int id)
         {

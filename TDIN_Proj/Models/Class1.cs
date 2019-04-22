@@ -11,19 +11,18 @@ namespace Models
     {
         public interface IManagement
         {
-            List<Table> GetTables();
-            List<Table> GetTablesUnpaid();
+            List<Table> GetTables();  //
             List<Table> GetPayableTables();
             void PayTable(Table table);
             List<Order> GetOrdersPending(OrderTypeEnum orderType);
             List<Order> GetOrdersInPreparation();
             List<Order> GetOrdersReady();
             List<Order> GetOrdersDone(Table table);
-            void InsertOrder(Table table, List<Item> items);
+            void InsertOrder(Table table, List<Item> items); //
             void UpdateOrderToInPreparation(Order order);
             void UpdateOrderToReady(Order order);
             void UpdateOrderToDone(Order order);
-            List<Item> GetItems();
+            List<Item> GetItems();  //
         }
 
     }
