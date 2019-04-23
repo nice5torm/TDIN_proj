@@ -72,7 +72,7 @@ namespace Management
 
         #region Order
 
-        public List<Order> GetOrdersPending(OrderTypeEnum orderType)
+        public List<Order> GetOrdersPending()
         {
             List<Order> orders = new List<Order> ();
             foreach(Table t in tables)

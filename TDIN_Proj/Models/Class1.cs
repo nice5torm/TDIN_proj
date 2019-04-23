@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class Class1
+    public class Class1 : MarshalByRefObject 
     {
         public interface IManagement
         {
             List<Table> GetTables();  //
             List<Table> GetPayableTables();
             void PayTable(Table table);
-            List<Order> GetOrdersPending(OrderTypeEnum orderType);
+            List<Order> GetOrdersPending();
             List<Order> GetOrdersInPreparation();
             List<Order> GetOrdersReady();
             List<Order> GetOrdersDone(Table table);

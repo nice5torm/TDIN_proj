@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Models;
 
 namespace KitchenBar
 {
@@ -27,26 +28,29 @@ namespace KitchenBar
                 InitializeComponent();
             }
 
-        }
+            List<Order> ordersPending = KitchenBar.listServer.GetOrdersPending();
+            List<Order> ordersPreparation = KitchenBar.listServer.GetOrdersInPreparation();
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
+            foreach (Order op in ordersPending)
+            {
+                listBox1.Items.Add(op.Id.ToString());
+            }
+
+            foreach (Order p in ordersPreparation)
+            {
+                listBox2.Items.Add(p.Id.ToString());
+            }
 
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            KitchenBar.listServer.UpdateOrderToInPreparation(KitchenBar.listServer.GetOrdersPending().Where(or => or.Id.ToString() == listBox1.SelectedItem.ToString()).First());
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            KitchenBar.listServer.UpdateOrderToReady(KitchenBar.listServer.GetOrdersInPreparation().Where(or => or.Id.ToString() == listBox2.SelectedItem.ToString()).First());
         }
     }
 }
