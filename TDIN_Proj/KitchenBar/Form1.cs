@@ -33,24 +33,24 @@ namespace KitchenBar
 
             foreach (Order op in ordersPending)
             {
-                listBox1.Items.Add(op.Id.ToString());
+                this.listBox1.Items.Add(op.Id.ToString());
             }
 
             foreach (Order p in ordersPreparation)
             {
-                listBox2.Items.Add(p.Id.ToString());
+                this.listBox2.Items.Add(p.Id.ToString());
             }
 
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            KitchenBar.listServer.UpdateOrderToInPreparation(KitchenBar.listServer.GetOrdersPending().Where(or => or.Id.ToString() == listBox1.SelectedItem.ToString()).First());
+            KitchenBar.listServer.UpdateOrderToInPreparation(KitchenBar.listServer.GetOrdersPending().Where(or => or.Id.ToString() == this.listBox1.SelectedItem.ToString()).First());
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            KitchenBar.listServer.UpdateOrderToReady(KitchenBar.listServer.GetOrdersInPreparation().Where(or => or.Id.ToString() == listBox2.SelectedItem.ToString()).First());
+            KitchenBar.listServer.UpdateOrderToReady(KitchenBar.listServer.GetOrdersInPreparation().Where(or => or.Id.ToString() == this.listBox2.SelectedItem.ToString()).First());
         }
     }
 }

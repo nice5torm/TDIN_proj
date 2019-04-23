@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Models.Class1;
 
 namespace KitchenBar
 {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,7 +9,6 @@ using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Models.Class1;
 
 namespace KitchenBar
 {
@@ -27,11 +27,13 @@ namespace KitchenBar
         private void button1_Click(object sender, EventArgs e)
         {
             Form1 formBar = new Form1(1);
+            formBar.ShowDialog();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             Form1 formKitchen = new Form1(0);
+            formKitchen.ShowDialog();
         }
     }
 }

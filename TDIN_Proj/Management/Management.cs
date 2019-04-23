@@ -129,8 +129,20 @@ namespace Management
 
         public void InsertOrder(Table table, List<Item> items)
         {
-            List<Item> itemsKitchen = items.Where(i => i.ItemType == Item.ItemTypeEnum.Kitchen).ToList();
-            List<Item> itemsBar = items.Where(i => i.ItemType == Item.ItemTypeEnum.Bar).ToList();
+            List<Item> itemsKitchen = new List<Item>();
+            List<Item> itemsBar = new List<Item>();
+            foreach (Item i in items)
+            {
+                if (i.ItemType == Item.ItemTypeEnum.Kitchen)
+                {
+                    itemsKitchen.Add(i);
+                }
+                else if (i.ItemType == Item.ItemTypeEnum.Bar)
+                {
+                    itemsBar.Add(i);
+                }
+            }
+            
 
             Order orderKitchen = new Order(OrderTypeEnum.Kitchen, itemsKitchen);
             Order orderBar = new Order(OrderTypeEnum.Bar, itemsBar);
