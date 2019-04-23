@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Remoting;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Models.Class1;
+using Models;
 
 namespace DinningRoom
 {

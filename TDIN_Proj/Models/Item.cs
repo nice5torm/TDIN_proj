@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models
 {
+    [Serializable]
     public class Item
     {
         private static int IdCounter = 1;
