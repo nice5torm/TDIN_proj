@@ -58,6 +58,7 @@ namespace DinningRoom
             Table selectedTable = tables.Where(t => t.Id.ToString() == this.comboBox1.SelectedItem.ToString()).First();
             List<Item> selectedItems = new List<Item>();
 
+            
             foreach ( string si in this.checkedListBox1.CheckedItems)
             {
                 foreach(Item it in items.Where(i => i.Name == si))
@@ -66,12 +67,13 @@ namespace DinningRoom
                 }
             }
 
-            DinningRoom.listServer.InsertOrder(selectedTable, selectedItems);
+            DinningRoom.listServer.InsertOrder(tables.Where(t => t.Id.ToString() == this.comboBox1.SelectedItem.ToString()).First(), selectedItems);
+            Console.WriteLine("table "+tables.Where(t => t.Id.ToString() == this.comboBox1.SelectedItem.ToString()).First().Orders.Count);
 
-            foreach (int si in this.checkedListBox1.CheckedIndices)
-            {
-                this.checkedListBox1.SetItemCheckState(si, CheckState.Unchecked);
-            }
+            //foreach (int si in this.checkedListBox1.CheckedIndices)
+            //{
+            //    this.checkedListBox1.SetItemCheckState(si, CheckState.Unchecked);
+            //}
         }
 
         private void button3_Click(object sender, EventArgs e)

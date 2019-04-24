@@ -142,14 +142,32 @@ namespace Management
                     itemsBar.Add(i);
                 }
             }
-            
+            if ( itemsBar.Count() == 0)
+            {
+                if( itemsKitchen.Count() != 0)
+                {
+                    Order orderKitchen = new Order(OrderTypeEnum.Kitchen, itemsKitchen);
+                    table.AddOrderTable(orderKitchen);
+                    Console.WriteLine("orderkitchen:" + table.Orders.Count);
+                }
+            }
+            else
+            {
+                Order orderBar = new Order(OrderTypeEnum.Bar, itemsBar);
+                table.AddOrderTable(orderBar);
+                Console.WriteLine("orderbar:" + table.Orders.Count);
 
-            Order orderKitchen = new Order(OrderTypeEnum.Kitchen, itemsKitchen);
-            Order orderBar = new Order(OrderTypeEnum.Bar, itemsBar);
 
-            table.Orders.Add(orderKitchen);
-            table.Orders.Add(orderBar);
+                if (itemsKitchen.Count() != 0)
+                { 
+                    Order orderKitchen = new Order(OrderTypeEnum.Kitchen, itemsKitchen);
+                    table.AddOrderTable(orderKitchen);
+                    Console.WriteLine("orderkitchen2:" + table.Orders.Count);
+                }
+            }
+
         }
+
 
         public void UpdateOrderToInPreparation(Order order)
         {

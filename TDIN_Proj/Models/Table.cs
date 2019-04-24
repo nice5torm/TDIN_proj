@@ -18,6 +18,11 @@ namespace Models
             Orders = new List<Order>();
         }
 
+        public void AddOrderTable(Order order)
+        {
+            Orders.Add(order);
+        }
+
         public int Id { get; set; }
 
         public TableStatusEnum TableStatus { get; set; }

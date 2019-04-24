@@ -16,7 +16,7 @@ namespace Models
         List<Order> GetOrdersInPreparation();
         List<Order> GetOrdersReady();
         List<Order> GetOrdersDone(Table table);
-        void InsertOrder(Table table, List<Item> items); //
+        void InsertOrder(Table table, List<Item> items); 
         void UpdateOrderToInPreparation(Order order);
         void UpdateOrderToReady(Order order);
         void UpdateOrderToDone(Order order);

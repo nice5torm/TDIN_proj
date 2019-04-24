@@ -38,6 +38,8 @@ namespace KitchenBar
             ordersPending = KitchenBar.listServer.GetOrdersPending();
             ordersPreparation = KitchenBar.listServer.GetOrdersInPreparation();
 
+            Console.WriteLine("[Server]:2" + KitchenBar.listServer.GetItems().First().Name); //ESTÁ A ACEDER AO SERVER!
+
             foreach (Order op in ordersPending)
             {
                 this.listBox1.Items.Add(op.Id.ToString());
@@ -47,7 +49,6 @@ namespace KitchenBar
             {
                 this.listBox2.Items.Add(p.Id.ToString());
             }
-
         }
 
         private void button2_Click(object sender, EventArgs e)

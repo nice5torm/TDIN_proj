@@ -16,7 +16,7 @@ namespace Models
             Id = IdCounter++;
             OrderStatus = OrderStatusEnum.Pending;
             OrderType = orderType;
-            Items = items; 
+            Items = items;
         }
 
         public int Id { get; set; }
