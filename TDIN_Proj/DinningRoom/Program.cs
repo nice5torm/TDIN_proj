@@ -10,7 +10,7 @@ namespace DinningRoom
 {
     static class DinningRoom
     {
-        public static IManagement listServer; //?
+        public static IManagement listServer; 
 
         /// <summary>
         /// Ponto de entrada principal para o aplicativo.

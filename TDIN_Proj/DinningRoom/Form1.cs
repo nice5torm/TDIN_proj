@@ -67,13 +67,23 @@ namespace DinningRoom
             }
 
             DinningRoom.listServer.InsertOrder(selectedTable, selectedItems);
+
+            foreach (int si in this.checkedListBox1.CheckedIndices)
+            {
+                this.checkedListBox1.SetItemCheckState(si, CheckState.Unchecked);
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            foreach(CheckedListBox.CheckedItemCollection so in this.checkedListBox2.CheckedItems)
+            foreach(string so in this.checkedListBox2.CheckedItems)
             {
-                DinningRoom.listServer.UpdateOrderToDone(DinningRoom.listServer.GetOrdersReady().Where(or => or.Id.ToString() == so.ToString()).First());
+                DinningRoom.listServer.UpdateOrderToDone(DinningRoom.listServer.GetOrdersReady().Where(or => or.Id.ToString() == so).First());
+            }
+
+            foreach (int si in this.checkedListBox1.CheckedIndices)
+            {
+                this.checkedListBox1.SetItemCheckState(si, CheckState.Unchecked);
             }
         }
 

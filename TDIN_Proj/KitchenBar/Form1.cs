@@ -8,13 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Models;
+using System.Runtime.Remoting;
 
 namespace KitchenBar
 {
     public partial class Form1 : Form
     {
+
         public Form1(int id)
         {
+
             if (id == 0)
             {
                 //KITCHEN
@@ -28,8 +31,12 @@ namespace KitchenBar
                 InitializeComponent();
             }
 
-            List<Order> ordersPending = KitchenBar.listServer.GetOrdersPending();
-            List<Order> ordersPreparation = KitchenBar.listServer.GetOrdersInPreparation();
+            List<Order> ordersPending = new List<Order>();
+            List<Order> ordersPreparation = new List<Order>();
+
+
+            ordersPending = KitchenBar.listServer.GetOrdersPending();
+            ordersPreparation = KitchenBar.listServer.GetOrdersInPreparation();
 
             foreach (Order op in ordersPending)
             {

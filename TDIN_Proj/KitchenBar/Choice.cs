@@ -14,13 +14,9 @@ namespace KitchenBar
 {
     public partial class Choice : Form
     {
-        IManagement listServer;
 
         public Choice()
         {
-            RemotingConfiguration.Configure("KitchenBar.exe.config", false);
-            //listServer = (IManagement)RemoteNew.New(typeof(IManagement));
-
             InitializeComponent();
         }
 
