@@ -5,33 +5,33 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-    [Serializable]
-    public class Table
+[Serializable]
+public class Table
+{
+    private static int IdCounter = 1;
+
+    public Table()
     {
-        private static int IdCounter = 1;
-
-        public Table()
-        {
-            Id = IdCounter++;
-            TableStatus = TableStatusEnum.NoOrder;
-            Orders = new List<Order>();
-        }
-
-        public void AddOrderTable(Order order)
-        {
-            TableStatus = TableStatusEnum.HasUnpaidOrder;
-            Orders.Add(order);
-        }
-
-        public int Id { get; set; }
-
-        public TableStatusEnum TableStatus { get; set; }
-
-        public List<Order> Orders { get; set; } = new List<Order>();
+        Id = IdCounter++;
+        TableStatus = TableStatusEnum.NoOrder;
+        Orders = new List<Order>();
     }
 
-    public enum TableStatusEnum
+    public void AddOrderTable(Order order)
     {
-        HasUnpaidOrder,
-        NoOrder
+        TableStatus = TableStatusEnum.HasUnpaidOrder;
+        Orders.Add(order);
     }
+
+    public int Id { get; set; }
+
+    public TableStatusEnum TableStatus { get; set; }
+
+    public List<Order> Orders { get; set; } = new List<Order>();
+}
+
+public enum TableStatusEnum
+{
+    HasUnpaidOrder,
+    NoOrder
+}
