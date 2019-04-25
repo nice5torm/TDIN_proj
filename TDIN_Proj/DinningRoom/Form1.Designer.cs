@@ -1,5 +1,4 @@
-﻿namespace DinningRoom
-{
+﻿
     partial class Form1
     {
         /// <summary>
@@ -237,6 +236,8 @@
             this.Controls.Add(this.groupBox3);
             this.Name = "Form1";
             this.Text = "DinningRoom";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -266,5 +267,5 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button2;
     }
-}
+
 

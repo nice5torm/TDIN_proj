@@ -20,6 +20,7 @@ namespace Models
 
         public void AddOrderTable(Order order)
         {
+            TableStatus = TableStatusEnum.HasUnpaidOrder;
             Orders.Add(order);
         }
 

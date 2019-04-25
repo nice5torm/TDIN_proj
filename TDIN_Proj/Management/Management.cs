@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using Models;
 
-namespace Management
-{
+
     public class Management : MarshalByRefObject, IManagement
     {
         public List<Table> tables = new List<Table>();
         public List<Item> itemsList = new List<Item>();
-
+        public event AlterDelegate alterEvent;
 
         public Management()
         {
@@ -43,6 +42,10 @@ namespace Management
             tables.Add(table5);
         }
 
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
 
         #region Table
         public List<Table> GetTables()
@@ -168,7 +171,6 @@ namespace Management
 
         }
 
-
         public void UpdateOrderToInPreparation(Order order)
         {
             order.OrderStatus = OrderStatusEnum.InPreparation;
@@ -194,4 +196,4 @@ namespace Management
 
         #endregion
     }
-}
+
