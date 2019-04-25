@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models
-{
+
     [Serializable]
     public class Order
     {
@@ -41,4 +40,3 @@ namespace Models
         Bar
     }
 
-}
