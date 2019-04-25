@@ -18,9 +18,12 @@ public partial class Form1 : Form
         delegate void UpdateDelegate();
 
         List<Order> ordersPending;
-        List<Order> ordersPreparation;
+    List<Order> ordersPreparation;
 
-        public Form1(int id)
+    List<Item> items;
+    List<Table> tables;
+
+    public Form1(int id)
         {
 
             if (id == 0)
@@ -30,18 +33,23 @@ public partial class Form1 : Form
                 InitializeComponent();
                 listServer = (IManagement)RemoteNew.New(typeof(IManagement));
 
-            }
-            else if (id == 1)
+            items = listServer.GetItems();
+            tables = listServer.GetTables();
+
+        }
+        else if (id == 1)
             {
                 //BAR
                 Text = "Bar";
                 InitializeComponent();
                 listServer = (IManagement)RemoteNew.New(typeof(IManagement));
 
-            }
+            items = listServer.GetItems();
+            tables = listServer.GetTables();
+        }
 
-            ordersPending = listServer.GetOrdersPending();
-            ordersPreparation = listServer.GetOrdersInPreparation();
+            ordersPending = listServer.GetOrdersPending(id);
+            ordersPreparation = listServer.GetOrdersInPreparation(id);
 
             evRepeater = new AlterEventRepeater();
             evRepeater.alterEvent += new AlterDelegate(DoAlterations);
@@ -53,17 +61,40 @@ public partial class Form1 : Form
         #region callbacks
         private void ChangePending()
         {
-            foreach (Order or in listServer.GetOrdersPending())
+
+        if (this.Text == "Kitchen")
+        {
+            foreach (Order or in listServer.GetOrdersPending(0))
             {
-                this.listBox1.Items.Add(or.Id.ToString());
+                    this.listBox1.Items.Add(or.Id.ToString());  
             }
         }
+        else if (this.Text == "Bar")
+        {
+            foreach (Order or in listServer.GetOrdersPending(1))
+            {
+                    this.listBox1.Items.Add(or.Id.ToString());
+            }
+        }
+
+    }
         private void ChangePreparation()
         {
-            foreach (Order or in listServer.GetOrdersInPreparation())
+        if (this.Text == "Kitchen")
+        {
+            foreach (Order or in listServer.GetOrdersInPreparation(0))
             {
-                this.listBox2.Items.Add(or.Id.ToString());
+                    this.listBox2.Items.Add(or.Id.ToString());
             }
+        }
+        else if (this.Text == "Bar")
+        {
+            foreach (Order or in listServer.GetOrdersInPreparation(1))
+            {
+                    this.listBox2.Items.Add(or.Id.ToString());
+            }
+        }
+
         }
 
     public void DoAlterations(Operation op, int tabId)
@@ -93,12 +124,12 @@ public partial class Form1 : Form
         {
             foreach (Order op in ordersPending)
             {
-                this.listBox1.Items.Add(op.Id.ToString());
+               listBox1.Items.Add(op.Id.ToString());
             }
 
             foreach (Order p in ordersPreparation)
             {
-                this.listBox2.Items.Add(p.Id.ToString());
+                listBox2.Items.Add(p.Id.ToString());
             }
         }
 
@@ -110,12 +141,12 @@ public partial class Form1 : Form
 
         private void button2_Click(object sender, EventArgs e)
         {
-            listServer.UpdateOrderToInPreparation(listServer.GetOrdersPending().Where(or => or.Id == Convert.ToInt32(this.listBox1.SelectedItem)).First());
+            listServer.UpdateOrderToInPreparation(Convert.ToInt32(listBox1.SelectedItem));
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            listServer.UpdateOrderToReady(listServer.GetOrdersInPreparation().Where(or => or.Id == Convert.ToInt32(this.listBox2.SelectedItem)).First());
+            listServer.UpdateOrderToReady(Convert.ToInt32(listBox2.SelectedItem));
         }
 
        

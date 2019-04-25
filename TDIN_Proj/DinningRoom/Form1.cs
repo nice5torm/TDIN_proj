@@ -148,7 +148,7 @@ public partial class Form1 : Form
     {
         foreach (string so in this.checkedListBox2.CheckedItems)
         {
-            listServer.UpdateOrderToDone(listServer.GetOrdersReady().Where(or => or.Id.ToString() == so).First());
+            listServer.UpdateOrderToDone(Convert.ToInt32(so));
         }
 
         foreach (int si in this.checkedListBox1.CheckedIndices)

@@ -14,14 +14,14 @@ public interface IManagement
     List<Table> GetTables();
     List<Table> GetPayableTables();
     void PayTable(int tabId);
-    List<Order> GetOrdersPending();
-    List<Order> GetOrdersInPreparation();
+    List<Order> GetOrdersPending(int kb);
+    List<Order> GetOrdersInPreparation(int kb);
     List<Order> GetOrdersReady();
     List<Order> GetOrdersDone(int tabId);
     void InsertOrder(int tabId, List<Item> items);
-    void UpdateOrderToInPreparation(Order order);
-    void UpdateOrderToReady(Order order);
-    void UpdateOrderToDone(Order order);
+    void UpdateOrderToInPreparation(int orderId);
+    void UpdateOrderToReady(int orderId);
+    void UpdateOrderToDone(int orderId);
     List<Item> GetItems();
 }
 

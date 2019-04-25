@@ -103,55 +103,35 @@ public class Management : MarshalByRefObject, IManagement
 
     #region Order
 
-    public List<Order> GetOrdersPending()
+    public List<Order> GetOrdersPending(int kb)
     {
-        List<Order> orders = new List<Order>();
-        foreach (Table t in tables)
+        if (kb == 0)
         {
-            foreach (Order o in t.Orders)
-            {
-                if (o.OrderStatus == OrderStatusEnum.Pending)
-                {
-                    orders.Add(o);
-                }
-            }
+            return tables.SelectMany(t=>t.Orders.Where(o => (o.OrderStatus== OrderStatusEnum.Pending) && (o.OrderType == OrderTypeEnum.Kitchen))).ToList();
         }
+        else
+        {
+            return tables.SelectMany(t => t.Orders.Where(o => (o.OrderStatus == OrderStatusEnum.Pending) && (o.OrderType == OrderTypeEnum.Bar))).ToList();
 
-        return orders;
+        }
+               
+
     }
 
-    public List<Order> GetOrdersInPreparation()
+    public List<Order> GetOrdersInPreparation(int kb)
     {
-        List<Order> orders = new List<Order>();
-        foreach (Table t in tables)
-        {
-            foreach (Order o in t.Orders)
-            {
-                if (o.OrderStatus == OrderStatusEnum.InPreparation)
-                {
-                    orders.Add(o);
-                }
-            }
-        }
+       if (kb == 0)
+            return tables.SelectMany(t => t.Orders.Where(o => (o.OrderStatus == OrderStatusEnum.InPreparation) && (o.OrderType == OrderTypeEnum.Kitchen))).ToList();
 
-        return orders;
+
+       else            
+            return tables.SelectMany(t => t.Orders.Where(o => (o.OrderStatus == OrderStatusEnum.InPreparation) && (o.OrderType == OrderTypeEnum.Bar))).ToList();
+
     }
 
     public List<Order> GetOrdersReady()
     {
-        List<Order> orders = new List<Order>();
-        foreach (Table t in tables)
-        {
-            foreach (Order o in t.Orders)
-            {
-                if (o.OrderStatus == OrderStatusEnum.Ready)
-                {
-                    orders.Add(o);
-                }
-            }
-        }
-
-        return orders;
+        return tables.SelectMany(t => t.Orders.Where(o => o.OrderStatus == OrderStatusEnum.Ready)).ToList(); 
     }
 
     public List<Order> GetOrdersDone(int tabId)
@@ -209,23 +189,37 @@ public class Management : MarshalByRefObject, IManagement
 
     }
 
-    public void UpdateOrderToInPreparation(Order order)
+    public void UpdateOrderToInPreparation(int orderId)
     {
-        order.OrderStatus = OrderStatusEnum.InPreparation;
+        Console.WriteLine("Preping");
+
+        foreach(Table t in tables)
+        {
+            t.Orders.Where(o => o.Id == orderId).AsEnumerable().Select( o => { o.OrderStatus = OrderStatusEnum.InPreparation; return o;  });
+        }
+
         NotifyClients(Operation.UpdatePending, 1);
         NotifyClients(Operation.UpdateInPrep, 1);
     }
 
-    public void UpdateOrderToReady(Order order)
+    public void UpdateOrderToReady(int orderId)
     {
-        order.OrderStatus = OrderStatusEnum.Ready;
+        Console.WriteLine("Done preping");
+        foreach (Table t in tables)
+        {
+            t.Orders.Where(o => o.Id == orderId).AsEnumerable().Select(o => { o.OrderStatus = OrderStatusEnum.Ready; return o; });
+        }
         NotifyClients(Operation.UpdateInPrep, 1);
         NotifyClients(Operation.UpdateReady, 1);
     }
 
-    public void UpdateOrderToDone(Order order)
+    public void UpdateOrderToDone(int orderId)
     {
-        order.OrderStatus = OrderStatusEnum.Done;
+        Console.WriteLine("Delivering");
+        foreach (Table t in tables)
+        {
+            t.Orders.Where(o => o.Id == orderId).AsEnumerable().Select(o => { o.OrderStatus = OrderStatusEnum.Done; return o; });
+        }
         NotifyClients(Operation.UpdateReady, 1);
         NotifyClients(Operation.PayableTables, 1);
     }
