@@ -7,13 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Models;
 using System.Runtime.Remoting;
+using System.Collections;
 
-namespace KitchenBar
-{
-    public partial class Form1 : Form
+public partial class Form1 : Form
     {
+        IManagement listServer;
+        AlterEventRepeater evRepeater;
+
+        delegate void UpdateDelegate();
+
+        List<Order> ordersPending;
+        List<Order> ordersPreparation;
 
         public Form1(int id)
         {
@@ -23,23 +28,69 @@ namespace KitchenBar
                 //KITCHEN
                 Text = "Kitchen";
                 InitializeComponent();
+                listServer = (IManagement)RemoteNew.New(typeof(IManagement));
+
             }
             else if (id == 1)
             {
                 //BAR
                 Text = "Bar";
                 InitializeComponent();
+                listServer = (IManagement)RemoteNew.New(typeof(IManagement));
+
             }
 
-            List<Order> ordersPending = new List<Order>();
-            List<Order> ordersPreparation = new List<Order>();
+            ordersPending = listServer.GetOrdersPending();
+            ordersPreparation = listServer.GetOrdersInPreparation();
+
+            evRepeater = new AlterEventRepeater();
+            evRepeater.alterEvent += new AlterDelegate(DoAlterations);
+            listServer.alterEvent += new AlterDelegate(evRepeater.Repeater);
+
+            
+        }
+
+        #region callbacks
+        private void ChangePending()
+        {
+            foreach (Order or in listServer.GetOrdersPending())
+            {
+                this.listBox1.Items.Add(or.Id.ToString());
+            }
+        }
+        private void ChangePreparation()
+        {
+            foreach (Order or in listServer.GetOrdersInPreparation())
+            {
+                this.listBox2.Items.Add(or.Id.ToString());
+            }
+        }
+
+    public void DoAlterations(Operation op, int tabId)
+        {
+            UpdateDelegate UpPending;
+            UpdateDelegate UpPreparation;
+
+            switch (op)
+            {
+               
+                case Operation.UpdateReady:
+                    UpPending = new UpdateDelegate(ChangePending);
+                    BeginInvoke(UpPending);
+                    break;
+                case Operation.PayableTables:
+                    UpPreparation = new UpdateDelegate(ChangePreparation);
+                    BeginInvoke(UpPreparation);
+                    break;
+
+            }
+        }
+
+        #endregion
 
 
-            ordersPending = KitchenBar.listServer.GetOrdersPending();
-            ordersPreparation = KitchenBar.listServer.GetOrdersInPreparation();
-
-            Console.WriteLine("[Server]:2" + KitchenBar.listServer.GetItems().First().Name); //ESTÁ A ACEDER AO SERVER!
-
+        private void Form1_Load(object sender, EventArgs e)
+        {
             foreach (Order op in ordersPending)
             {
                 this.listBox1.Items.Add(op.Id.ToString());
@@ -51,14 +102,46 @@ namespace KitchenBar
             }
         }
 
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            listServer.alterEvent -= new AlterDelegate(evRepeater.Repeater);
+            evRepeater.alterEvent -= new AlterDelegate(DoAlterations);
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
-            KitchenBar.listServer.UpdateOrderToInPreparation(KitchenBar.listServer.GetOrdersPending().Where(or => or.Id.ToString() == this.listBox1.SelectedItem.ToString()).First());
+            listServer.UpdateOrderToInPreparation(listServer.GetOrdersPending().Where(or => or.Id == Convert.ToInt32(this.listBox1.SelectedItem)).First());
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            KitchenBar.listServer.UpdateOrderToReady(KitchenBar.listServer.GetOrdersInPreparation().Where(or => or.Id.ToString() == this.listBox2.SelectedItem.ToString()).First());
+            listServer.UpdateOrderToReady(listServer.GetOrdersInPreparation().Where(or => or.Id == Convert.ToInt32(this.listBox2.SelectedItem)).First());
+        }
+
+       
+    }
+
+    #region remote
+
+    class RemoteNew
+    {
+        private static Hashtable types = null;
+
+        private static void InitTypeTable()
+        {
+            types = new Hashtable();
+            foreach (WellKnownClientTypeEntry entry in RemotingConfiguration.GetRegisteredWellKnownClientTypes())
+                types.Add(entry.ObjectType, entry);
+        }
+
+        public static object New(Type type)
+        {
+            if (types == null)
+                InitTypeTable();
+            WellKnownClientTypeEntry entry = (WellKnownClientTypeEntry)types[type];
+            if (entry == null)
+                throw new RemotingException("Type not found!");
+            return RemotingServices.Connect(type, entry.ObjectUrl);
         }
     }
-}
+    #endregion

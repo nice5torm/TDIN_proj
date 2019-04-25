@@ -13,12 +13,12 @@ public interface IManagement
 
     List<Table> GetTables();
     List<Table> GetPayableTables();
-    void PayTable(Table table);
+    void PayTable(int tabId);
     List<Order> GetOrdersPending();
     List<Order> GetOrdersInPreparation();
     List<Order> GetOrdersReady();
-    List<Order> GetOrdersDone(Table table);
-    void InsertOrder(Table table, List<Item> items);
+    List<Order> GetOrdersDone(int tabId);
+    void InsertOrder(int tabId, List<Item> items);
     void UpdateOrderToInPreparation(Order order);
     void UpdateOrderToReady(Order order);
     void UpdateOrderToDone(Order order);
@@ -28,7 +28,7 @@ public interface IManagement
 public enum Operation { MakeOrder, UpdatePending, UpdateInPrep, UpdateReady, PayableTables, Invoice, Pay }; //a ver isto
 
 
-public delegate void AlterDelegate(Operation op, Table t, Order o);
+public delegate void AlterDelegate(Operation op, int tabId);
 
 public class AlterEventRepeater : MarshalByRefObject
 {
@@ -40,10 +40,10 @@ public class AlterEventRepeater : MarshalByRefObject
     }
 
 
-    public void Repeater(Operation op, Table t, Order o)
+    public void Repeater(Operation op, int tabId)
     {
         if (alterEvent != null)
-            alterEvent(op, t, o);
+            alterEvent(op,  tabId);
 
     }
 

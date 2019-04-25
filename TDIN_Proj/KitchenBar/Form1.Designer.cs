@@ -1,5 +1,4 @@
-﻿namespace KitchenBar
-{
+﻿
     partial class Form1
     {
         /// <summary>
@@ -136,6 +135,8 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox3);
             this.Name = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -155,5 +156,5 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button2;
     }
-}
+
 

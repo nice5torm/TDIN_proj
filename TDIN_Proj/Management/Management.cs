@@ -49,7 +49,7 @@ public class Management : MarshalByRefObject, IManagement
         return null;
     }
 
-    void NotifyClients(Operation op, Table tab, Order or)
+    void NotifyClients(Operation op, int tabId)
     {
         if (alterEvent != null)
         {
@@ -61,8 +61,9 @@ public class Management : MarshalByRefObject, IManagement
                 {
                     try
                     {
-                        handler(op, tab, or);
+                        handler(op, tabId);
                         Console.WriteLine("Invoking event handler");
+                        Console.WriteLine(op.ToString());
                     }
                     catch (Exception)
                     {
@@ -91,11 +92,11 @@ public class Management : MarshalByRefObject, IManagement
         return tables.Where(t => t.TableStatus == TableStatusEnum.HasUnpaidOrder && t.Orders.Count() == t.Orders.Where(o => o.OrderStatus == OrderStatusEnum.Done).Count()).ToList();
     }
 
-    public void PayTable(Table table)
+    public void PayTable(int tabId)
     {
-        table.Orders.Clear();
-        table.TableStatus = TableStatusEnum.NoOrder;
-        //NotifyClients(Operation.Pay, table);
+        tables.Where(t => t.Id == tabId).First().Orders.Clear();
+        tables.Where(t => t.Id == tabId).First().TableStatus = TableStatusEnum.NoOrder;
+        NotifyClients(Operation.Pay, tabId);
     }
 
     #endregion
@@ -153,12 +154,12 @@ public class Management : MarshalByRefObject, IManagement
         return orders;
     }
 
-    public List<Order> GetOrdersDone(Table table)
+    public List<Order> GetOrdersDone(int tabId)
     {
-        return table.Orders.Where(o => o.OrderStatus == OrderStatusEnum.Done).ToList();
+        return tables.Where(t => t.Id == tabId).First().Orders.Where(o => o.OrderStatus == OrderStatusEnum.Done).ToList();
     }
 
-    public void InsertOrder(Table table, List<Item> items)
+    public void InsertOrder(int tabId, List<Item> items)
     {
         List<Item> itemsKitchen = new List<Item>();
         List<Item> itemsBar = new List<Item>();
@@ -178,25 +179,31 @@ public class Management : MarshalByRefObject, IManagement
             if (itemsKitchen.Count() != 0)
             {
                 Order orderKitchen = new Order(OrderTypeEnum.Kitchen, itemsKitchen);
-                table.AddOrderTable(orderKitchen);
-                NotifyClients(Operation.MakeOrder, table, orderKitchen);
-                //Console.WriteLine("orderkitchen:" + table.Orders.Count);
+                tables.Where(t => t.Id == tabId).First().AddOrderTable(orderKitchen);
+                NotifyClients(Operation.MakeOrder, tabId);
+                NotifyClients(Operation.UpdatePending, 1);
+
+                Console.WriteLine("orderkitchen:" + tables.Where(t => t.Id == tabId).First().Orders.Count);
             }
         }
         else
         {
             Order orderBar = new Order(OrderTypeEnum.Bar, itemsBar);
-            table.AddOrderTable(orderBar);
-            NotifyClients(Operation.MakeOrder, table, orderBar);
-            //Console.WriteLine("orderbar:" + table.Orders.Count);
+            tables.Where(t => t.Id == tabId).First().AddOrderTable(orderBar);
+            NotifyClients(Operation.MakeOrder, tabId);
+            NotifyClients(Operation.UpdatePending, 1);
+
+            Console.WriteLine("orderbar:" + tables.Where(t => t.Id == tabId).First().Orders.Count);
 
 
             if (itemsKitchen.Count() != 0)
             {
                 Order orderKitchen = new Order(OrderTypeEnum.Kitchen, itemsKitchen);
-                table.AddOrderTable(orderKitchen);
-                NotifyClients(Operation.MakeOrder, table, orderKitchen);
-                //Console.WriteLine("orderkitchen2:" + table.Orders.Count);
+                tables.Where(t => t.Id == tabId).First().AddOrderTable(orderKitchen);
+                NotifyClients(Operation.MakeOrder, tabId);
+                NotifyClients(Operation.UpdatePending, 1);
+
+                Console.WriteLine("orderkitchen2:" + tables.Where(t => t.Id == tabId).First().Orders.Count);
             }
         }
 
@@ -205,16 +212,22 @@ public class Management : MarshalByRefObject, IManagement
     public void UpdateOrderToInPreparation(Order order)
     {
         order.OrderStatus = OrderStatusEnum.InPreparation;
+        NotifyClients(Operation.UpdatePending, 1);
+        NotifyClients(Operation.UpdateInPrep, 1);
     }
 
     public void UpdateOrderToReady(Order order)
     {
         order.OrderStatus = OrderStatusEnum.Ready;
+        NotifyClients(Operation.UpdateInPrep, 1);
+        NotifyClients(Operation.UpdateReady, 1);
     }
 
     public void UpdateOrderToDone(Order order)
     {
         order.OrderStatus = OrderStatusEnum.Done;
+        NotifyClients(Operation.UpdateReady, 1);
+        NotifyClients(Operation.PayableTables, 1);
     }
 
     #endregion

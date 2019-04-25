@@ -20,8 +20,8 @@ public partial class Form1 : Form
     List<Table> tables;
 
     delegate void UpdateDelegate();
-    //delegate void InvoiceDelegate(Table t);
-    delegate void MakeDelegate(Table t, Order o);
+    delegate void InvoiceDelegate(int tabId);
+    delegate void MakeDelegate();
 
 
     public Form1()
@@ -30,7 +30,6 @@ public partial class Form1 : Form
         InitializeComponent();
         listServer = (IManagement)RemoteNew.New(typeof(IManagement));
 
-        //listServer = (IManagement)Activator.GetObject(typeof(IManagement), "tcp://localhost:9000/Server/ListServer"); //?
 
         items = listServer.GetItems();
         tables = listServer.GetTables();
@@ -43,36 +42,12 @@ public partial class Form1 : Form
         listServer.alterEvent += new AlterDelegate(evRepeater.Repeater);
   
 
-        //foreach (Item i in items)
-        //{
-        //    this.checkedListBox1.Items.Add(i.Name, false);
-        //}
-
-        //foreach (Table t in tables)
-        //{
-        //    this.comboBox1.Items.Add(t.Id.ToString());
-        //}
-
-        //foreach(Order or in ordersReady)
-        //{
-        //   this. checkedListBox2.Items.Add(or.Id.ToString(), false);
-        //}
-
-        //foreach(Table pt in payableTables)
-        //{
-        //    this.comboBox2.Items.Add(pt.Id.ToString());
-        //}
-
     }
-    #region functionsweird
+    #region callbacks
 
-    private void MakeOrderTable(Table tab, Order order)
+    private void MakeOrderTable()
     {
-        //listServer.InsertOrder(tab, order.Items);
-
-        tables.Where(t => t.Id.ToString() == this.comboBox1.SelectedItem.ToString()).First().AddOrderTable(order);
-
-        foreach (int si in this.checkedListBox1.CheckedIndices)                               //outra change nas funções weird
+        foreach (int si in this.checkedListBox1.CheckedIndices)                               
         {
             this.checkedListBox1.SetItemCheckState(si, CheckState.Unchecked);
         }
@@ -93,25 +68,26 @@ public partial class Form1 : Form
         }
     }
 
-    private void ChangeInvoice(Table t)
+    private void ChangeInvoice(int tabId)
     {
-        foreach (Order or in listServer.GetPayableTables().Where(tab => tab == t).First().Orders)
+        foreach (Order or in listServer.GetPayableTables().Where(tab => tab.Id == tabId).First().Orders)
         {
             this.listBox2.Items.Add(or.Id);
         }
     }
 
-    public void DoAlterations(Operation op, Table tab, Order ord)
+    public void DoAlterations(Operation op, int tabId)
     {
         MakeDelegate MakeOr;
         UpdateDelegate UpReady;
         UpdateDelegate UpTab;
+        InvoiceDelegate Invoice; 
 
         switch (op)
         {
             case Operation.MakeOrder:
                 MakeOr = new MakeDelegate(MakeOrderTable);
-                BeginInvoke(MakeOr, new object[] { tab, ord });
+                BeginInvoke(MakeOr);
                 break;
             case Operation.UpdateReady:
                 UpReady = new UpdateDelegate(ChangeReady);
@@ -121,10 +97,10 @@ public partial class Form1 : Form
                 UpTab = new UpdateDelegate(ChangePayTables);
                 BeginInvoke(UpTab);
                 break;
-            //case Operation.Invoice:
-            //    Invoice = new InvoiceDelegate(ChangeInvoice);
-            //    BeginInvoke(Invoice, new object[] { tab });
-            //    break;
+            case Operation.Invoice:
+                Invoice = new InvoiceDelegate(ChangeInvoice);
+                BeginInvoke(Invoice, new object[] { tabId });
+                break;
 
         }
     }
@@ -154,7 +130,7 @@ public partial class Form1 : Form
 
     private void button1_Click(object sender, EventArgs e)
     {
-        Table selectedTable = tables.Where(t => t.Id.ToString() == this.comboBox1.SelectedItem.ToString()).First();
+        Table selectedTable = tables.Where(t => t.Id == Convert.ToInt32(this.comboBox1.SelectedItem)).First();
         List<Item> selectedItems = new List<Item>();
 
 
@@ -165,14 +141,7 @@ public partial class Form1 : Form
                 selectedItems.Add(it);
             }
         }
-
-        this.listServer.InsertOrder(this.listServer.GetTables().Where(t => t.Id.ToString() == this.comboBox1.SelectedItem.ToString()).First(), selectedItems);
-        //Console.WriteLine("table "+tables.Where(t => t.Id.ToString() == this.comboBox1.SelectedItem.ToString()).First().Orders.Count);
-
-        //foreach (int si in this.checkedListBox1.CheckedIndices)                               //outra change nas funções weird
-        //{
-        //    this.checkedListBox1.SetItemCheckState(si, CheckState.Unchecked);
-        //}
+        listServer.InsertOrder(Convert.ToInt32(this.comboBox1.SelectedItem), selectedItems);
     }
 
     private void button3_Click(object sender, EventArgs e)
@@ -190,12 +159,12 @@ public partial class Form1 : Form
 
     private void button2_Click(object sender, EventArgs e)
     {
-        listServer.PayTable(tables.Where(t => t.Id.ToString() == comboBox2.SelectedItem.ToString()).First());
+        listServer.PayTable(Convert.ToInt32(comboBox2.SelectedItem));
     }
 
     private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
     {
-        List<Order> ordersDonebyTable = listServer.GetOrdersDone(tables.Where(t => t.Id.ToString() == this.comboBox2.SelectedItem.ToString()).First());
+        List<Order> ordersDonebyTable = listServer.GetOrdersDone(Convert.ToInt32(this.comboBox2.SelectedItem));
 
         foreach (Order odt in ordersDonebyTable)
         {
