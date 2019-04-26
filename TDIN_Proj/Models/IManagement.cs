@@ -14,6 +14,7 @@ public interface IManagement
     List<Table> GetTables();
     List<Table> GetPayableTables();
     void PayTable(int tabId);
+    double GetOrderPrice(int orId);
     List<Order> GetOrdersPending(int kb);
     List<Order> GetOrdersInPreparation(int kb);
     List<Order> GetOrdersReady();

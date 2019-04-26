@@ -103,6 +103,26 @@ public class Management : MarshalByRefObject, IManagement
 
     #region Order
 
+    public double GetOrderPrice(int orId)
+    {
+        double fullprice = 0;
+
+        foreach(Table t in tables)
+        {
+            foreach(Order o in t.Orders)
+            {
+                if(o.Id == orId)
+                {
+                    foreach (Item i in o.Items)
+                    {
+                        fullprice = i.Price;
+                    }
+                }
+            }
+        }
+        return fullprice; 
+    }
+
     public List<Order> GetOrdersPending(int kb)
     {
         if (kb == 0)

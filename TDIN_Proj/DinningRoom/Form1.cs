@@ -73,11 +73,15 @@ public partial class Form1 : Form
     private void ChangeInvoice(int tabId)
     {
         this.listBox2.Items.Clear();
+        listBox1.Items.Clear();
+        double price = 0; 
 
         foreach (Order or in listServer.GetPayableTables().Where(tab => tab.Id == tabId).First().Orders)
         {
             this.listBox2.Items.Add(or.Id);
+            price += listServer.GetOrderPrice(or.Id);
         }
+        listBox1.Items.Add(price);
     }
 
     public void DoAlterations(Operation op, int tabId)
@@ -180,16 +184,20 @@ public partial class Form1 : Form
 
         comboBox2.Items.Remove(comboBox2.SelectedItem);
         listBox2.Items.Clear();
-
+        listBox1.Items.Clear();
     }
 
     private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
     {
+        double price = 0; 
         listBox2.Items.Clear();
+        listBox1.Items.Clear();
         foreach (Order odt in listServer.GetOrdersDone(Convert.ToInt32(comboBox2.SelectedItem)))
         {
             listBox2.Items.Add(odt.Id.ToString());
+            price += listServer.GetOrderPrice(odt.Id);
         }
+        listBox1.Items.Add(price);
     }
 
     private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
