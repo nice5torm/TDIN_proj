@@ -11,7 +11,6 @@ public class Management : MarshalByRefObject, IManagement
     public List<Table> tables;
     public List<Item> itemsList;
     public event AlterDelegate alterEvent;
-    public event AlterDelegate alterEvent1;
 
     public Management()
     {

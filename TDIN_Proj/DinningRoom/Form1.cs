@@ -21,7 +21,6 @@ public partial class Form1 : Form
 
     delegate void UpdateDelegate();
     delegate void InvoiceDelegate(int tabId);
-    delegate void MakeDelegate();
 
 
     public Form1()
@@ -83,7 +82,7 @@ public partial class Form1 : Form
 
     public void DoAlterations(Operation op, int tabId)
     {
-        MakeDelegate MakeOr;
+        UpdateDelegate MakeOr;
         UpdateDelegate UpReady;
         UpdateDelegate UpTab;
         InvoiceDelegate Invoice; 
@@ -91,7 +90,7 @@ public partial class Form1 : Form
         switch (op)
         {
             case Operation.MakeOrder:
-                MakeOr = new MakeDelegate(MakeOrderTable);
+                MakeOr = new UpdateDelegate(MakeOrderTable);
                 BeginInvoke(MakeOr);
                 break;
             case Operation.UpdateReady:

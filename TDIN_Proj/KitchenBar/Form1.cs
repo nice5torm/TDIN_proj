@@ -39,8 +39,8 @@ public partial class Form1 : Form
             ordersPreparation = listServer.GetOrdersInPreparation(id);
 
             evRepeater = new AlterEventRepeater();
-            evRepeater.alterEvent1 += new AlterDelegate(DoAlterations);
-            listServer.alterEvent1 += new AlterDelegate(evRepeater.Repeater);
+            evRepeater.alterEvent += new AlterDelegate(DoAlterations);
+            listServer.alterEvent += new AlterDelegate(evRepeater.Repeater);
 
         }
         else if (id == 1)
@@ -56,8 +56,8 @@ public partial class Form1 : Form
             ordersPreparation = listServer.GetOrdersInPreparation(id);
 
             evRepeater = new AlterEventRepeater();
-            evRepeater.alterEvent1 += new AlterDelegate(DoAlterations);
-            listServer.alterEvent1 += new AlterDelegate(evRepeater.Repeater);
+            evRepeater.alterEvent += new AlterDelegate(DoAlterations);
+            listServer.alterEvent += new AlterDelegate(evRepeater.Repeater);
         }
 
 

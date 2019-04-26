@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 public interface IManagement
 {
     event AlterDelegate alterEvent;
-    event AlterDelegate alterEvent1;
 
     List<Table> GetTables();
     List<Table> GetPayableTables();
@@ -46,8 +45,6 @@ public class AlterEventRepeater : MarshalByRefObject
     {
         if (alterEvent != null)
             alterEvent(op,  tabId);
-        if (alterEvent1 != null)
-            alterEvent(op, tabId);
 
     }
 
