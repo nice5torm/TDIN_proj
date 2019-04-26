@@ -11,6 +11,7 @@ public class Management : MarshalByRefObject, IManagement
     public List<Table> tables;
     public List<Item> itemsList;
     public event AlterDelegate alterEvent;
+    public event AlterDelegate alterEvent1;
 
     public Management()
     {
@@ -195,7 +196,11 @@ public class Management : MarshalByRefObject, IManagement
 
         foreach(Table t in tables)
         {
-            t.Orders.Where(o => o.Id == orderId).AsEnumerable().Select( o => { o.OrderStatus = OrderStatusEnum.InPreparation; return o;  });
+            foreach (Order o in t.Orders)
+            {
+                if (o.Id == orderId)
+                    o.UpdatetoPreparation();
+            }
         }
 
         NotifyClients(Operation.UpdatePending, 1);
@@ -207,8 +212,13 @@ public class Management : MarshalByRefObject, IManagement
         Console.WriteLine("Done preping");
         foreach (Table t in tables)
         {
-            t.Orders.Where(o => o.Id == orderId).AsEnumerable().Select(o => { o.OrderStatus = OrderStatusEnum.Ready; return o; });
+            foreach (Order o in t.Orders)
+            {
+                if (o.Id == orderId)
+                    o.UpdatetoReady();
+            }
         }
+
         NotifyClients(Operation.UpdateInPrep, 1);
         NotifyClients(Operation.UpdateReady, 1);
     }
@@ -218,8 +228,13 @@ public class Management : MarshalByRefObject, IManagement
         Console.WriteLine("Delivering");
         foreach (Table t in tables)
         {
-            t.Orders.Where(o => o.Id == orderId).AsEnumerable().Select(o => { o.OrderStatus = OrderStatusEnum.Done; return o; });
+            foreach (Order o in t.Orders)
+            {
+                if (o.Id == orderId)
+                    o.UpdatetoDone();
+            }
         }
+
         NotifyClients(Operation.UpdateReady, 1);
         NotifyClients(Operation.PayableTables, 1);
     }

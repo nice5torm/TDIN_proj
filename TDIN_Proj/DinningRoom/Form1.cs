@@ -34,8 +34,6 @@ public partial class Form1 : Form
         items = listServer.GetItems();
         tables = listServer.GetTables();
 
-        //List<Table> payableTables = listServer.GetPayableTables();
-        //List<Order> ordersReady = listServer.GetOrdersReady();
 
         evRepeater = new AlterEventRepeater();
         evRepeater.alterEvent += new AlterDelegate(DoAlterations);
@@ -54,14 +52,19 @@ public partial class Form1 : Form
     }
     private void ChangeReady()
     {
+        this.checkedListBox2.Items.Clear();
+
         foreach (Order or in listServer.GetOrdersReady())
         {
+           
             this.checkedListBox2.Items.Add(or.Id.ToString(), false);
         }
     }
 
     private void ChangePayTables()
     {
+        this.comboBox2.Items.Clear();
+
         foreach (Table pt in listServer.GetPayableTables())
         {
             this.comboBox2.Items.Add(pt.Id.ToString());
@@ -70,6 +73,8 @@ public partial class Form1 : Form
 
     private void ChangeInvoice(int tabId)
     {
+        this.listBox2.Items.Clear();
+
         foreach (Order or in listServer.GetPayableTables().Where(tab => tab.Id == tabId).First().Orders)
         {
             this.listBox2.Items.Add(or.Id);
@@ -120,6 +125,17 @@ public partial class Form1 : Form
         {
             this.comboBox1.Items.Add(t.Id.ToString());
         }
+
+        foreach(Order or in listServer.GetOrdersReady())
+        {
+            this.checkedListBox2.Items.Add(or.Id);
+        }
+        
+        foreach(Table t in listServer.GetPayableTables())
+        {
+            this.comboBox2.Items.Add(t.Id.ToString());
+        }
+
     }
 
     private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -150,33 +166,38 @@ public partial class Form1 : Form
         {
             listServer.UpdateOrderToDone(Convert.ToInt32(so));
         }
+        checkedListBox2.Items.Clear();
 
-        foreach (int si in this.checkedListBox1.CheckedIndices)
+        foreach (Order or in listServer.GetOrdersReady())
         {
-            this.checkedListBox1.SetItemCheckState(si, CheckState.Unchecked);
+            this.checkedListBox2.Items.Add(or.Id);
         }
+
     }
 
     private void button2_Click(object sender, EventArgs e)
     {
         listServer.PayTable(Convert.ToInt32(comboBox2.SelectedItem));
+
+        comboBox2.Items.Remove(comboBox2.SelectedItem);
+        listBox2.Items.Clear();
+
     }
 
     private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
     {
-        List<Order> ordersDonebyTable = listServer.GetOrdersDone(Convert.ToInt32(this.comboBox2.SelectedItem));
-
-        foreach (Order odt in ordersDonebyTable)
+        listBox2.Items.Clear();
+        foreach (Order odt in listServer.GetOrdersDone(Convert.ToInt32(comboBox2.SelectedItem)))
         {
-            this.listBox2.Items.Add(odt.Id.ToString());
+            listBox2.Items.Add(odt.Id.ToString());
         }
     }
 
     private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
     {
-        foreach (int si in this.checkedListBox1.CheckedIndices)
+        foreach (int si in checkedListBox1.CheckedIndices)
         {
-            this.checkedListBox1.SetItemCheckState(si, CheckState.Unchecked);
+            checkedListBox1.SetItemCheckState(si, CheckState.Unchecked);
         }
     }
     #endregion

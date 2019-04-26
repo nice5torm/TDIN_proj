@@ -18,6 +18,19 @@ public class Order
         Items = items;
     }
 
+    public void UpdatetoPreparation()
+    {
+        OrderStatus = OrderStatusEnum.InPreparation;
+    }
+    public void UpdatetoReady()
+    {
+        OrderStatus = OrderStatusEnum.Ready;
+    }
+    public void UpdatetoDone()
+    {
+        OrderStatus = OrderStatusEnum.Done;
+    }
+
     public int Id { get; set; }
 
     public OrderStatusEnum OrderStatus { get; set; }
