@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Remoting;
 
+
 namespace Server
 {
     class Program
@@ -13,6 +14,7 @@ namespace Server
         {
             RemotingConfiguration.Configure("Server.exe.config", false);
             Console.WriteLine("Press Return to terminate.");
+
             Console.ReadLine();
         }
     }

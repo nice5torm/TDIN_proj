@@ -61,8 +61,6 @@ public partial class Form1 : Form
         }
 
 
-
-
     }
 
     #region callbacks
@@ -115,11 +113,11 @@ public partial class Form1 : Form
         switch (op)
         {
 
-            case Operation.UpdateReady:
+            case Operation.UpdatePending:
                 UpPending = new UpdateDelegate(ChangePending);
                 BeginInvoke(UpPending);
                 break;
-            case Operation.PayableTables:
+            case Operation.UpdateInPrep:
                 UpPreparation = new UpdateDelegate(ChangePreparation);
                 BeginInvoke(UpPreparation);
                 break;

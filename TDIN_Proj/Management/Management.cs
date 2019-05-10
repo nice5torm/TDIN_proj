@@ -4,7 +4,9 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading;
-
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class Management : MarshalByRefObject, IManagement
 {
@@ -12,8 +14,13 @@ public class Management : MarshalByRefObject, IManagement
     public List<Item> itemsList;
     public event AlterDelegate alterEvent;
 
+    IFormatter formatter = new BinaryFormatter();
+    Stream writer = new FileStream("Wfile.txt", FileMode.Create, FileAccess.Write);
+
+
     public Management()
     {
+              
         tables = new List<Table>();
         itemsList = new List<Item>();
 
@@ -81,7 +88,6 @@ public class Management : MarshalByRefObject, IManagement
         return tables;
     }
 
-
     public Table GetTable(int id)
     {
         return tables.Where(t => t.Id == id).FirstOrDefault();
@@ -94,9 +100,22 @@ public class Management : MarshalByRefObject, IManagement
 
     public void PayTable(int tabId)
     {
+        string str = "table: " + tabId + " price: " + GetTablePrice(tabId);
+        formatter.Serialize(writer, str);
+
         tables.Where(t => t.Id == tabId).First().Orders.Clear();
         tables.Where(t => t.Id == tabId).First().TableStatus = TableStatusEnum.NoOrder;
         NotifyClients(Operation.Pay, tabId);
+    }
+
+    public double GetTablePrice(int tabId)
+    {
+        double price = 0;
+        foreach(Order o in tables.Where(t=> t.Id == tabId).First().Orders)
+        {
+            price += GetOrderPrice(o.Id);
+        }
+        return price;
     }
 
     #endregion
