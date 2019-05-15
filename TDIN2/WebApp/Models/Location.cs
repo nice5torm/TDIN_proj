@@ -7,8 +7,8 @@ namespace WebApp.Models
 {
     public class Location
     {
-        public int Id;
+        public int Id { get; set; }
 
-        public string Name;
+        public string Name { get; set; }
     }
 }

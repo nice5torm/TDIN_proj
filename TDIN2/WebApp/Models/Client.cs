@@ -9,15 +9,15 @@ namespace WebApp.Models
     public class Client
     {
         [Key]
-        public int ID;
+        public int ID { get; set; }
 
-        public string Name;
+        public string Name { get; set; }
 
-        public string Email;
+        public string Email { get; set; }
 
-        public string Address;
+        public string Address { get; set; }
 
-        public List<Order> OrdersClient; 
+        public List<Order> OrdersClient { get; set; }
 
     }
 }

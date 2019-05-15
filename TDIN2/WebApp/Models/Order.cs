@@ -16,14 +16,21 @@ namespace WebApp.Models
 
         public DateTime DispatchedDate { get; set; }
 
+        public int Quantity { get; set; }
+
+        public int? ClientId { get; set; }
+
+        [ForeignKey("ClientId")]
+        public Client Client { get; set; }
+
         public OrderStatusEnum OrderStatus { get; set; }
 
         public OrderTypeEnum OrderType { get; set; }
 
-        public int? BookId;
+        public int? BookId { get; set; }
 
         [ForeignKey("BookId")]
-        public Book Book; 
+        public Book Book { get; set; }
     }
     public enum OrderStatusEnum
     {
