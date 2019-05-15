@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,18 +9,26 @@ namespace WebApp.Models
 {
     public class Order
     {
-        private static int GUID = 1;
+        [Key]
+        public int GUID { get; set; }
 
-        public Order(string title, int quantity, string cli_name, string address, string email)
-        {
-            GUID = GUID++;
-        }
+        public DateTime WaitingDate { get; set; }
 
+        public DateTime DispatchedDate { get; set; }
+
+        public OrderStatusEnum OrderStatus { get; set; }
+
+        public OrderTypeEnum OrderType { get; set; }
+
+        public int? BookId;
+
+        [ForeignKey("BookId")]
+        public Book Book; 
     }
     public enum OrderStatusEnum
     {
-        Wainting_expedition,
-        Dispatched, 
+        Wainting_expedition,       
+        Dispatched,                 
         Dispatch
     }
     public enum OrderTypeEnum
