@@ -12,9 +12,9 @@ namespace WebApp.Models
         [Key]
         public int GUID { get; set; }
 
-        public DateTime WaitingDate { get; set; }
-
         public DateTime DispatchedDate { get; set; }
+
+        public DateTime DispatchOccurence { get; set; }
 
         public int Quantity { get; set; }
 
@@ -36,7 +36,7 @@ namespace WebApp.Models
     {
         Wainting_expedition,       
         Dispatched,                 
-        Dispatch
+        DispatchOccurence
     }
     public enum OrderTypeEnum
     {
