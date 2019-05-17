@@ -7,14 +7,10 @@ using System.Threading.Tasks;
 
 namespace WebApp.Models
 {
-    public class Order
+    public class Sale
     {
         [Key]
         public int GUID { get; set; }
-
-        public DateTime WaitingDate { get; set; }
-
-        public DateTime DispatchedDate { get; set; }
 
         public int Quantity { get; set; }
 
@@ -23,24 +19,10 @@ namespace WebApp.Models
         [ForeignKey("ClientId")]
         public Client Client { get; set; }
 
-        public OrderStatusEnum OrderStatus { get; set; }
-
-        public OrderTypeEnum OrderType { get; set; }
-
         public int? BookId { get; set; }
 
         [ForeignKey("BookId")]
         public Book Book { get; set; }
-    }
-    public enum OrderStatusEnum
-    {
-        Wainting_expedition,       
-        Dispatched,                 
-        Dispatch
-    }
-    public enum OrderTypeEnum
-    {
-        Web,
-        Store
+
     }
 }

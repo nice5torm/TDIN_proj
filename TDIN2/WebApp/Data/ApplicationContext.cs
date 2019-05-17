@@ -11,13 +11,14 @@ namespace WebApp.Data
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
 
-        public DbSet<Order> Order { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
-        public DbSet<Client> Client { get; set; }
+        public DbSet<Client> Clients { get; set; }
 
-        public DbSet<Book> Book { get; set; }
+        public DbSet<Book> Books { get; set; }
 
-        public DbSet<Stock> Stock { get; set; }
+        public DbSet<Sale> Sales { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
