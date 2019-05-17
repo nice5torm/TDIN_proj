@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApp.Models;
 
+
 namespace WebApp.Data
 {
     public class ApplicationContext : DbContext
@@ -24,10 +25,9 @@ namespace WebApp.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Order>()                    //fazer para o DispachedDate?
-                .Property(b => b.WaitingDate)
-                .HasDefaultValueSql("CONVERT(date, GETDATE())");
-
+            //modelBuilder.Entity<Order>()                    
+            //    .Property(b => b.DispatchedDate)
+            //    .HasDefaultValueSql("CONVERT(date, GETDATE())");
 
 
             //modelBuilder.Entity<Utilizador>()             //usar para o client?
