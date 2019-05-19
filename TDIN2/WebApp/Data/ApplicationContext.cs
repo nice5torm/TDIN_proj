@@ -33,9 +33,12 @@ namespace WebApp.Data
             //modelBuilder.Entity<Utilizador>()             //usar para o client?
             //    .HasIndex(u => u.Username)
             //    .IsUnique();
-        }
+        }        
+    }
 
-        
+    public class Result
+    {
+        public List<string> Errors { get; internal set; }
     }
 
 }

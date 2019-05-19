@@ -32,6 +32,15 @@ namespace WebApp.Controllers
             }
         }
 
+        [HttpGet("GetSalesBook")]
+        public ActionResult<List<Sale>> GetSalesBook(int id)
+        {
+            using (UnitOfWork unitOfWork = new UnitOfWork(_context))
+            {
+                return Ok(unitOfWork.Sales.GetListWithRelatedBook(id));
+            }
+        }
+
         [HttpGet("GetSale")]
         public ActionResult<Sale> GetSale(int id)
         {
@@ -40,7 +49,7 @@ namespace WebApp.Controllers
                 Sale s= unitOfWork.Sales.GetWithRelated(id);
                 if (s != null)
                 {
-                    return Ok(s;
+                    return Ok(s);
                 }
                 else
                 {
@@ -48,7 +57,7 @@ namespace WebApp.Controllers
                 }
             }
         }
-
+       
         [HttpPost("CreateSale")]
         public ActionResult<Result> CreateSale([FromBody] Sale model)     //what is this? from body?
         {
@@ -65,47 +74,27 @@ namespace WebApp.Controllers
 
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
-                unitOfWork.Sale.Add(model);
-                unitOfWork.Complete();
-                return Ok();
+                try
+                {
+                    unitOfWork.Sales.Add(model);
+                    unitOfWork.Complete();
+                    return Ok();
+                }
+                catch(Exception)
+                {
+                    return BadRequest(new Result
+                    {
+                        Errors = new List<string> { "Erro desconhecido" }
+                    });
+                }
+               
             }
                 catch (Exception)
             {
-                return BadRequest(new Result
-                {
-                    Errors = new List<string> { "Erro desconhecido" }
-                });
+               
             }
         }
 
-        //[HttpPut("EditSale")]
-        //public ActionResult<Result> EditSale([FromBody] Sale model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(new Result
-        //        {
-        //            Errors = new List<string> { "Pedido Inválido" }
-        //        });
-        //    }
-
-        //    using (UnitOfWork unitOfWork = new UnitOfWork(_context))
-        //    {
-        //        try
-        //        {
-        //            unitOfWork.Sales.Update(model);
-        //            unitOfWork.Complete();
-        //            return Ok();
-        //        }
-        //        catch (Exception)
-        //        {
-        //            return BadRequest(new Result
-        //            {
-        //                Errors = new List<string> { "Erro ao editar, outro utilizador deve ter editado entretanto" }
-        //            });
-        //        }
-        //    }
-        //}
 
         [HttpDelete("DeleteSale")]
         public ActionResult<Result> DeleteSale(int id)
@@ -117,7 +106,7 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    Sale s = unitOfWork.Sale.GetWithRelated(id);
+                    Sale s = unitOfWork.Sales.GetWithRelated(id);
 
                     unitOfWork.Sales.Remove(s);
                     unitOfWork.Complete();

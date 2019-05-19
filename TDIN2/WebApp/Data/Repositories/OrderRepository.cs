@@ -13,17 +13,23 @@ namespace WebApp.Data
 
         }
 
-        //public Order GetWithRelated(int id)
-        //{
-        //    return Context.Orders
-        //        .FirstOrDefault(o => o.ClientId == id);
-        //}
+        public Order GetWithRelated(int id)
+        {
+            return Context.Orders
+                .FirstOrDefault(o => o.GUID == id);
+        }
 
-        //public Sale GetWithRelated(int id)
-        //{
-        //    return Context.Orders
-        //        .FirstOrDefault(o => o.BookId == id);
-        //}
+        public List<Order> GetListWithRelatedClient(int Cid)
+        {
+            return Context.Orders
+                .Where(o => o.ClientId == Cid).ToList();
+        }
+
+        public List<Order> GetListWithRelatedBook(int Bid)
+        {
+            return Context.Orders
+                .Where(o => o.BookId == Bid).ToList();
+        }
 
         public List<Order> GetListWithRelated()
         {

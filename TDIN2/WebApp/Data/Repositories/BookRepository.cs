@@ -13,6 +13,12 @@ namespace WebApp.Data
 
         }
 
+        public Book GetWithRelated(int id)
+        {
+            return Context.Books
+                .FirstOrDefault(b => b.Id == id);
+        }
+
         public List<Book> GetListWithRelated()
         {
             return Context.Books
@@ -22,7 +28,7 @@ namespace WebApp.Data
         public Book GetByName(string title)
         {
             return Context.Books
-                .FirstOrDefault(l => l.Title == title);
+                .FirstOrDefault(b => b.Title == title);
         }
     }
 }

@@ -35,10 +35,10 @@ namespace WebApp.Controllers
         {
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
-                Order i = unitOfWork.Clients.GetWithRelated(id);
-                if (i != null)
+                Client c = unitOfWork.Clients.GetWithRelated(id);
+                if (c != null)
                 {
-                    return Ok(i);
+                    return Ok(c);
                 }
                 else
                 {
@@ -63,7 +63,7 @@ namespace WebApp.Controllers
 
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
-                unitOfWork.Client.Add(model);
+                unitOfWork.Clients.Add(model);
                 unitOfWork.Complete();
                 return Ok();
             }
@@ -76,34 +76,34 @@ namespace WebApp.Controllers
             }
         }
 
-        //[HttpPut("EditClient")]
-        //public ActionResult<Result> EditClient([FromBody] Client model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(new Result
-        //        {
-        //            Errors = new List<string> { "Pedido Inválido" }
-        //        });
-        //    }
+        [HttpPut("EditClient")]
+        public ActionResult<Result> EditClient([FromBody] Client model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Result
+                {
+                    Errors = new List<string> { "Pedido Inválido" }
+                });
+            }
 
-        //    using (UnitOfWork unitOfWork = new UnitOfWork(_context))
-        //    {
-        //        try
-        //        {
-        //            unitOfWork.Clients.Update(model);
-        //            unitOfWork.Complete();
-        //            return Ok();
-        //        }
-        //        catch (Exception)
-        //        {
-        //            return BadRequest(new Result
-        //            {
-        //                Errors = new List<string> { "Erro ao editar, outro utilizador deve ter editado entretanto" }
-        //            });
-        //        }
-        //    }
-        //}
+            using (UnitOfWork unitOfWork = new UnitOfWork(_context))
+            {
+                try
+                {
+                    unitOfWork.Clients.Update(model);
+                    unitOfWork.Complete();
+                    return Ok();
+                }
+                catch (Exception)
+                {
+                    return BadRequest(new Result
+                    {
+                        Errors = new List<string> { "Erro ao editar, outro utilizador deve ter editado entretanto" }
+                    });
+                }
+            }
+        }
 
         [HttpDelete("DeleteClient")]
         public ActionResult<Result> DeleteClient(int id)
@@ -115,9 +115,9 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    Client c = unitOfWork.Client.GetWithRelated(id);
+                    Client c = unitOfWork.Clients.GetWithRelated(id);
 
-                    unitOfWork.Orders.Remove(c);
+                    unitOfWork.Clients.Remove(c);
                     unitOfWork.Complete();
                     return Ok();
                 }

@@ -30,6 +30,24 @@ namespace WebApp.Controllers
             }
         }
 
+        [HttpGet("GetOrdersClient")]
+        public ActionResult<List<Order>> GetOrdersClient(int id)
+        {
+            using (UnitOfWork unitOfWork = new UnitOfWork(_context))
+            {
+                return Ok(unitOfWork.Orders.GetListWithRelatedClient(id));
+            }
+        }
+
+        [HttpGet("GetOrdersBook")]
+        public ActionResult<List<Order>> GetOrdersBook(int id)
+        {
+            using (UnitOfWork unitOfWork = new UnitOfWork(_context))
+            {
+                return Ok(unitOfWork.Orders.GetListWithRelatedBook(id));
+            }
+        }
+
         [HttpGet("GetOrder")]
         public ActionResult<Order> GetOrder(int id)
         {
@@ -63,7 +81,7 @@ namespace WebApp.Controllers
 
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
-                unitOfWork.Order.Add(model);
+                unitOfWork.Orders.Add(model);
                 unitOfWork.Complete();
                 return Ok();
             }
@@ -76,35 +94,6 @@ namespace WebApp.Controllers
             }
         }
 
-        //[HttpPut("EditOrder")]
-        //public ActionResult<Result> EditOrder([FromBody] Order model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(new Result
-        //        {
-        //            Errors = new List<string> { "Pedido Inválido" }
-        //        });
-        //    }
-
-        //    using (UnitOfWork unitOfWork = new UnitOfWork(_context))
-        //    {
-        //        try
-        //        {
-        //            unitOfWork.Orders.Update(model);
-        //            unitOfWork.Complete();
-        //            return Ok();
-        //        }
-        //        catch (Exception)
-        //        {
-        //            return BadRequest(new Result
-        //            {
-        //                Errors = new List<string> { "Erro ao editar, outro utilizador deve ter editado entretanto" }
-        //            });
-        //        }
-        //    }
-        //}
-
         [HttpDelete("DeleteOrder")]
         public ActionResult<Result> DeleteOrder(int id)
         {
@@ -115,7 +104,7 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    Order o = unitOfWork.Order.GetWithRelated(id);
+                    Order o = unitOfWork.Orders.GetWithRelated(id);
 
                     unitOfWork.Orders.Remove(o);
                     unitOfWork.Complete();

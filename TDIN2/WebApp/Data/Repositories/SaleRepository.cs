@@ -13,17 +13,17 @@ namespace WebApp.Data.Repositories
 
         }
 
-        //public Sale GetWithRelated(int id)
-        //{
-        //    return Context.Sales
-        //        .FirstOrDefault(s => s.ClientId == id);
-        //}
+        public Sale GetWithRelated(int id)
+        {
+            return Context.Sales
+                .FirstOrDefault(s => s.GUID == id);
+        }
 
-        //public Sale GetWithRelated(int id)
-        //{
-        //    return Context.Sales
-        //        .FirstOrDefault(s => s.BookId == id);
-        //}
+        public List<Sale> GetListWithRelatedBook(int Bid)
+        {
+            return Context.Sales
+                .Where(s => s.BookId == Bid).ToList();
+        }
 
         public List<Sale> GetListWithRelated()
         {

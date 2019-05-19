@@ -60,7 +60,7 @@ namespace WebApp.Controllers
 
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
-                unitOfWork.Book.Add(model);
+                unitOfWork.Books.Add(model);
                 unitOfWork.Complete();
                 return Ok();
             }
@@ -73,34 +73,34 @@ namespace WebApp.Controllers
             }
         }
 
-        //[HttpPut("EditBook")]
-        //public ActionResult<Result> EditBook([FromBody] Book model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(new Result
-        //        {
-        //            Errors = new List<string> { "Pedido Inválido" }
-        //        });
-        //    }
+        [HttpPut("EditBook")]
+        public ActionResult<Result> EditBook([FromBody] Book model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Result
+                {
+                    Errors = new List<string> { "Pedido Inválido" }
+                });
+            }
 
-        //    using (UnitOfWork unitOfWork = new UnitOfWork(_context))
-        //    {
-        //        try
-        //        {
-        //            unitOfWork.Books.Update(model);
-        //            unitOfWork.Complete();
-        //            return Ok();
-        //        }
-        //        catch (Exception)
-        //        {
-        //            return BadRequest(new Result
-        //            {
-        //                Errors = new List<string> { "Erro ao editar, outro utilizador deve ter editado entretanto" }
-        //            });
-        //        }
-        //    }
-        //}
+            using (UnitOfWork unitOfWork = new UnitOfWork(_context))
+            {
+                try
+                {
+                    unitOfWork.Books.Update(model);
+                    unitOfWork.Complete();
+                    return Ok();
+                }
+                catch (Exception)
+                {
+                    return BadRequest(new Result
+                    {
+                        Errors = new List<string> { "Erro ao editar" }
+                    });
+                }
+            }
+        }
 
         [HttpDelete("DeleteBook")]
         public ActionResult<Result> DeleteBook(int id)
@@ -112,7 +112,7 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    Book b = unitOfWork.Book.GetWithRelated(id);
+                    Book b = unitOfWork.Books.GetWithRelated(id);
 
                     unitOfWork.Books.Remove(b);
                     unitOfWork.Complete();
