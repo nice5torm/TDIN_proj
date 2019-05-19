@@ -89,10 +89,7 @@ namespace WebApp.Controllers
                 }
                
             }
-                catch (Exception)
-            {
                
-            }
         }
 
 

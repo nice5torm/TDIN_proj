@@ -81,17 +81,21 @@ namespace WebApp.Controllers
 
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
-                unitOfWork.Orders.Add(model);
-                unitOfWork.Complete();
-                return Ok();
-            }
-                catch (Exception)
-            {
-                return BadRequest(new Result
+                try
                 {
-                    Errors = new List<string> { "Erro desconhecido" }
-                });
+                    unitOfWork.Orders.Add(model);
+                    unitOfWork.Complete();
+                    return Ok();
+                }
+                catch (Exception)
+                {
+                    return BadRequest(new Result
+                    {
+                        Errors = new List<string> { "Erro desconhecido" }
+                    });
+                }
             }
+            
         }
 
         [HttpDelete("DeleteOrder")]
@@ -119,8 +123,6 @@ namespace WebApp.Controllers
                 }
             }
         }
-
-
     }
 }
-}
+
