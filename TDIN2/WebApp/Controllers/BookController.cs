@@ -8,6 +8,9 @@ using WebApp.Models;
 
 namespace WebApp.Controllers
 {
+    [Produces("application/json")]
+    [Route("api/[controller]")]
+    [ApiController]
 
     public class BookController : Controller
     {
