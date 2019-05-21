@@ -36,9 +36,6 @@ namespace WebApp.Data
         }        
     }
 
-    public class Result
-    {
-        public List<string> Errors { get; internal set; }
-    }
+
 
 }

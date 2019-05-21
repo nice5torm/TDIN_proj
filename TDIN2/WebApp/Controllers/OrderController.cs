@@ -66,14 +66,11 @@ namespace WebApp.Controllers
         }
 
         [HttpPost("CreateOrder")]
-        public ActionResult<Result> CreateOrder([FromBody] Order model)     //what is this? from body?
+        public ActionResult<string> CreateOrder([FromBody] Order model)     //what is this? from body?
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new Result
-                {
-                    Errors = new List<string> { "Pedido Inválido" }
-                });
+                return BadRequest( "Pedido Inválido" );
             }
 
             //string role = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
@@ -89,17 +86,14 @@ namespace WebApp.Controllers
                 }
                 catch (Exception)
                 {
-                    return BadRequest(new Result
-                    {
-                        Errors = new List<string> { "Erro desconhecido" }
-                    });
+                    return BadRequest( "Erro desconhecido" );
                 }
             }
             
         }
 
         [HttpDelete("DeleteOrder")]
-        public ActionResult<Result> DeleteOrder(int id)
+        public ActionResult<string> DeleteOrder(int id)
         {
             //string role = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
             //int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
@@ -116,10 +110,7 @@ namespace WebApp.Controllers
                 }
                 catch (Exception)
                 {
-                    return BadRequest(new Result
-                    {
-                        Errors = new List<string> { "Erro ao apagar" }
-                    });
+                    return BadRequest( "Erro ao apagar");
                 }
             }
         }

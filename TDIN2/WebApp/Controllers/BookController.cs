@@ -45,14 +45,11 @@ namespace WebApp.Controllers
         }
 
         [HttpPost("CreateBook")]
-        public ActionResult<Result> CreateBook([FromBody] Book model)     //what is this? from body?
+        public ActionResult<string> CreateBook([FromBody] Book model)     //what is this? from body?
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new Result
-                {
-                    Errors = new List<string> { "Pedido Inválido" }
-                });
+                return BadRequest( "Pedido Inválido" );
             }
 
             //string role = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
@@ -68,24 +65,20 @@ namespace WebApp.Controllers
                 }
                 catch (Exception)
                 {
-                    return BadRequest(new Result
-                    {
-                        Errors = new List<string> { "Erro desconhecido" }
-                    });
+                    return BadRequest( "Erro desconhecido" 
+                    );
                 }
             }
                
         }
 
         [HttpPut("EditBook")]
-        public ActionResult<Result> EditBook([FromBody] Book model)
+        public ActionResult<string> EditBook([FromBody] Book model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new Result
-                {
-                    Errors = new List<string> { "Pedido Inválido" }
-                });
+                return BadRequest( "Pedido Inválido" 
+                );
             }
 
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
@@ -98,16 +91,14 @@ namespace WebApp.Controllers
                 }
                 catch (Exception)
                 {
-                    return BadRequest(new Result
-                    {
-                        Errors = new List<string> { "Erro ao editar" }
-                    });
+                    return BadRequest( "Erro ao editar" 
+                    );
                 }
             }
         }
 
         [HttpDelete("DeleteBook")]
-        public ActionResult<Result> DeleteBook(int id)
+        public ActionResult<string> DeleteBook(int id)
         {
             //string role = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
             //int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
@@ -124,10 +115,8 @@ namespace WebApp.Controllers
                 }
                 catch (Exception)
                 {
-                    return BadRequest(new Result
-                    {
-                        Errors = new List<string> { "Erro ao apagar" }
-                    });
+                    return BadRequest( "Erro ao apagar" 
+                    );
                 }
             }
         }
