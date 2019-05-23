@@ -35,7 +35,15 @@ namespace WebApp.Controllers
         {
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
-                return Ok(unitOfWork.Orders.GetListWithRelatedClient(id));
+                List<Order> lo = unitOfWork.Orders.GetListWithRelatedClient(id);
+                if (lo != null)
+                {
+                    return Ok(lo);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
         }
 
@@ -44,7 +52,15 @@ namespace WebApp.Controllers
         {
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
-                return Ok(unitOfWork.Orders.GetListWithRelatedBook(id));
+                List<Order> lo = unitOfWork.Orders.GetListWithRelatedBook(id);
+                if(lo != null)
+                {
+                    return Ok(lo);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
         }
 
@@ -66,16 +82,12 @@ namespace WebApp.Controllers
         }
 
         [HttpPost("CreateOrder")]
-        public ActionResult<string> CreateOrder([FromBody] Order model)     //what is this? from body?
+        public ActionResult<string> CreateOrder([FromBody] Order model)     
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest( "Pedido Inválido" );
             }
-
-            //string role = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
-            //int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
                 try
@@ -95,9 +107,6 @@ namespace WebApp.Controllers
         [HttpDelete("DeleteOrder")]
         public ActionResult<string> DeleteOrder(int id)
         {
-            //string role = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
-            //int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
                 try

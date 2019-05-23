@@ -48,16 +48,12 @@ namespace WebApp.Controllers
         }
 
         [HttpPost("CreateBook")]
-        public ActionResult<string> CreateBook([FromBody] Book model)     //what is this? from body?
+        public ActionResult<string> CreateBook([FromBody] Book model)     
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest( "Pedido Inválido" );
             }
-
-            //string role = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
-            //int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
                 try
@@ -68,8 +64,7 @@ namespace WebApp.Controllers
                 }
                 catch (Exception)
                 {
-                    return BadRequest( "Erro desconhecido" 
-                    );
+                    return BadRequest( "Erro desconhecido" );
                 }
             }
                
@@ -80,8 +75,7 @@ namespace WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest( "Pedido Inválido" 
-                );
+                return BadRequest( "Pedido Inválido" );
             }
 
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
@@ -94,8 +88,7 @@ namespace WebApp.Controllers
                 }
                 catch (Exception)
                 {
-                    return BadRequest( "Erro ao editar" 
-                    );
+                    return BadRequest( "Erro ao editar" );
                 }
             }
         }
@@ -103,9 +96,6 @@ namespace WebApp.Controllers
         [HttpDelete("DeleteBook")]
         public ActionResult<string> DeleteBook(int id)
         {
-            //string role = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
-            //int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
                 try
@@ -118,8 +108,7 @@ namespace WebApp.Controllers
                 }
                 catch (Exception)
                 {
-                    return BadRequest( "Erro ao apagar" 
-                    );
+                    return BadRequest( "Erro ao apagar" );
                 }
             }
         }

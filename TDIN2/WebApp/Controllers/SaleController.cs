@@ -37,7 +37,15 @@ namespace WebApp.Controllers
         {
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
-                return Ok(unitOfWork.Sales.GetListWithRelatedBook(id));
+                List<Sale> s = unitOfWork.Sales.GetListWithRelatedBook(id);
+                if(s != null)
+                {
+                    return Ok(s);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
         }
 
@@ -59,15 +67,13 @@ namespace WebApp.Controllers
         }
        
         [HttpPost("CreateSale")]
-        public ActionResult<string> CreateSale([FromBody] Sale model)     //what is this? from body?
+        public ActionResult<string> CreateSale([FromBody] Sale model)     
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest( "Pedido Inválido" );
             }
 
-            //string role = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
-            //int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
@@ -90,9 +96,6 @@ namespace WebApp.Controllers
         [HttpDelete("DeleteSale")]
         public ActionResult<string> DeleteSale(int id)
         {
-            //string role = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
-            //int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
                 try
@@ -105,9 +108,7 @@ namespace WebApp.Controllers
                 }
                 catch (Exception)
                 {
-                    return BadRequest(
-                    "Erro ao apagar" 
-                    );
+                    return BadRequest( "Erro ao apagar"  );
                 }
             }
         }

@@ -48,7 +48,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost("CreateClient")]
-        public ActionResult<string> CreateClient([FromBody] Client model)     //what is this? from body?
+        public ActionResult<string> CreateClient([FromBody] Client model)     
         {
             if (!ModelState.IsValid)
             {
@@ -56,10 +56,6 @@ namespace WebApp.Controllers
                     "Pedido Inválido" 
                 );
             }
-
-            //string role = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
-            //int userId = int.Parse(HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
                 try
@@ -71,9 +67,7 @@ namespace WebApp.Controllers
 
                 catch (Exception)
                 {
-                    return BadRequest(
-                        "Erro desconhecido" 
-                    );
+                    return BadRequest( "Erro desconhecido" );
                 }
             }
         }
@@ -96,7 +90,7 @@ namespace WebApp.Controllers
                 }
                 catch (Exception)
                 {
-                    return BadRequest("Erro ao editar, outro utilizador deve ter editado entretanto" );
+                    return BadRequest("Erro ao editar" );
                 }
             }
         }

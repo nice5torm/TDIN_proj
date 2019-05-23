@@ -25,15 +25,15 @@ namespace WebApp.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<Order>()                    
-            //    .Property(b => b.DispatchedDate)
-            //    .HasDefaultValueSql("CONVERT(date, GETDATE())");
+            modelBuilder.Entity<Book>().HasData(
+                new Book { Id = 1, Title = "Livro", Price = 12, Amount = 2},
+                new Book { Id = 2, Title = "Dicionário", Price = 20, Amount = 4}
+                );
+            modelBuilder.Entity<Client>().HasData(
+                new Client { ID = 1, Name = "Maria", Address = "Rua 123", Email = "maria@mail.com", OrdersClient = new List<Order>() }
+                );
 
-
-            //modelBuilder.Entity<Utilizador>()             //usar para o client?
-            //    .HasIndex(u => u.Username)
-            //    .IsUnique();
-        }        
+        }
     }
 
 
