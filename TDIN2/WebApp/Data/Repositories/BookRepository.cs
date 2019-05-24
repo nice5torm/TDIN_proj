@@ -21,8 +21,7 @@ namespace WebApp.Data
 
         public List<Book> GetListWithRelated()
         {
-            return Context.Books
-                .ToList();
+            return Context.Books.ToList();
         }
 
         public Book GetByName(string title)

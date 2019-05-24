@@ -40,8 +40,10 @@ namespace GUI_Store
                     Sale sale = new Sale
                     {
                         Quantity = Convert.ToInt32(numericUpDown1.Value),
-                        ClientId = client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.Content.ReadAsAsync<Client>().Id,
-                        BookId = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
+                        ClientId = client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.Content.ReadAsAsync<Client>().Result.ID,
+                        Client= client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.Content.ReadAsAsync<Client>().Result,
+                        BookId = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id,
+                        Book= client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result
                     };
 
                     var salestringContent = new StringContent(sale.ToString());
@@ -57,27 +59,37 @@ namespace GUI_Store
                     var bookstringContent = new StringContent(book.ToString());
 
                     client.PostAsync("api/Sale/CreateSale", salestringContent);
-                    client.PutAsync("api/Book/UpdateBook", bookstringContent);
+                    if (client.PostAsync("api/Sale/CreateSale", salestringContent).Result.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Sale made with sucess!", "Sucess sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
 
+                    client.PutAsync("api/Book/UpdateBook", bookstringContent);
+                    stock.Text = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id.ToString();
                 }
                 else
                 {
                     Order order = new Order()
                     {
                         Quantity = Convert.ToInt32(numericUpDown1.Value),
-                        ClientId = client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.Content.ReadAsAsync<Client>().Id,
-                        BookId = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
+                        ClientId = client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.Content.ReadAsAsync<Client>().Result.ID,
+                        Client = client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.Content.ReadAsAsync<Client>().Result,
+                        BookId = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id,
+                        Book = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result
                     };
 
                     var orderstringContent = new StringContent(order.ToString());
 
                     client.PostAsync("api/Order/CreateOrder", orderstringContent);
+                    if (client.PostAsync("api/Order/CreateOrder", orderstringContent).Result.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Order made with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    }
 
                     MessageQueue.SendMessageToWarehouse(order.GUID, booktitle.Text, Convert.ToInt32(numericUpDown1.Value));
 
                 }
-
-
             }
             else
             {
@@ -92,7 +104,8 @@ namespace GUI_Store
                             Email = textBox2.Text,
                             Address = textBox3.Text
                         },
-                        BookId = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
+                        BookId = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id,
+                        Book = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result
                     };
 
                     var salestringContent = new StringContent(sale.ToString());
@@ -108,7 +121,13 @@ namespace GUI_Store
                     var bookstringContent = new StringContent(book.ToString());
                     
                     client.PostAsync("api/Sale/CreateSale", salestringContent);
+                    if(client.PostAsync("api/Sale/CreateSale",salestringContent).Result.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Sale made with sucess!", "Sucess Sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
                     client.PutAsync("api/Book/UpdateBook", bookstringContent);
+                    stock.Text = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id.ToString();
 
                 }
                 else
@@ -121,12 +140,18 @@ namespace GUI_Store
                             Email = textBox2.Text,
                             Address = textBox3.Text
                         },
-                        BookId = client.GetAsync("api/Book/GetBookByName?title="+ booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
+                        BookId = client.GetAsync("api/Book/GetBookByName?title="+ booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id,
+                        Book = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result
                     };
 
                     var orderstringContent = new StringContent(order.ToString());
 
                     client.PostAsync("api/Order/CreateOrder", orderstringContent);
+
+                    if(client.PostAsync("api/Order/CreateOrder", orderstringContent).Result.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Order made with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
 
                     MessageQueue.SendMessageToWarehouse(order.GUID,booktitle.Text,Convert.ToInt32(numericUpDown1.Value));
 
