@@ -28,12 +28,11 @@ namespace GUI_Store
 
             HttpResponseMessage responseorder = client.GetAsync("api/Order/getOrders").Result;
             var order = responseorder.Content.ReadAsAsync<IEnumerable<Order>>().Result.Where(o => o.OrderStatus == OrderStatusEnum.Wainting_expedition);
-            
-            dataGridView1.DataSource = order;
-            dataGridView2.DataSource = book; 
-
 
             InitializeComponent();
+            this.dataGridView2.DataSource = book;
+            this.dataGridView1.DataSource = order;
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -71,7 +70,7 @@ namespace GUI_Store
 
             if (dataGridView2.SelectedCells.Count == 0)
             {
-                MessageBox.Show("Title need values!", "Insufficient data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Didn't select anything!", "Insufficient data", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             else

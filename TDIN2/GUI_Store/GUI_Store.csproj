@@ -75,6 +75,7 @@
     <EmbeddedResource Include="OrderCreation.resx">
       <DependentUpon>OrderCreation.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Properties\DataSources\Common.Models.Book.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
