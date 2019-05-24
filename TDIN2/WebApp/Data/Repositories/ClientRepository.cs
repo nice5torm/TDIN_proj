@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApp.Models;
+using Common.Models;
 
 namespace WebApp.Data.Repositories
 {
@@ -27,10 +27,10 @@ namespace WebApp.Data.Repositories
                 .ToList();
         }
 
-        public Client GetByName(string name)
+        public Client GetByEmail(string email)
         {
             return Context.Clients
-                .FirstOrDefault(c => c.Name == name);
+                .FirstOrDefault(c => c.Email == email);
         }
     }
 }

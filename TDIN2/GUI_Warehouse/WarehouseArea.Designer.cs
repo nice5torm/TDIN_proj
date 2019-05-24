@@ -1,6 +1,6 @@
 ﻿namespace GUI_Warehouse
 {
-    partial class Form1
+    partial class WarehouseArea
     {
         /// <summary>
         /// Variável de designer necessária.
@@ -70,15 +70,16 @@
             this.button3.TabIndex = 4;
             this.button3.Text = "Send";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // Form1
+            // WarehouseArea
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(328, 450);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.listView1);
-            this.Name = "Form1";
+            this.Name = "WarehouseArea";
             this.Text = "Warehouse";
             this.ResumeLayout(false);
 

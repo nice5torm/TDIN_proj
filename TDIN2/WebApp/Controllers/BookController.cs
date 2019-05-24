@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApp.Data;
-using WebApp.Models;
+using Common.Models;
 
 namespace WebApp.Controllers
 {
@@ -36,6 +36,23 @@ namespace WebApp.Controllers
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
                 Book b = unitOfWork.Books.GetWithRelated(id);
+                if (b != null)
+                {
+                    return Ok(b);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+        }
+
+        [HttpGet("GetBookByName")]
+        public ActionResult<Book> GetBookByName(string title)
+        {
+            using (UnitOfWork unitOfWork = new UnitOfWork(_context))
+            {
+                Book b = unitOfWork.Books.GetByName(title);
                 if (b != null)
                 {
                     return Ok(b);

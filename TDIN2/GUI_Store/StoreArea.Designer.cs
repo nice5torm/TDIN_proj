@@ -1,6 +1,6 @@
 ﻿namespace GUI_Store
 {
-    partial class Form1
+    partial class StoreArea
     {
         /// <summary>
         /// Variável de designer necessária.
@@ -36,11 +36,12 @@
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button3 = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
             this.OrderTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Quantity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.ordID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -89,6 +90,7 @@
             this.button1.TabIndex = 1;
             this.button1.Text = "Search";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
@@ -120,10 +122,18 @@
             this.groupBox2.Controls.Add(this.listView1);
             this.groupBox2.Location = new System.Drawing.Point(384, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(356, 446);
+            this.groupBox2.Size = new System.Drawing.Size(419, 446);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Orders Management";
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(25, 19);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(363, 150);
+            this.dataGridView1.TabIndex = 4;
             // 
             // button3
             // 
@@ -140,14 +150,15 @@
             this.listView1.AllowColumnReorder = true;
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.OrderTitle,
-            this.Quantity});
+            this.Quantity,
+            this.ordID});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(25, 175);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(305, 226);
+            this.listView1.Size = new System.Drawing.Size(363, 226);
             this.listView1.TabIndex = 2;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -162,22 +173,18 @@
             this.Quantity.Text = "Quantity";
             this.Quantity.Width = 100;
             // 
-            // dataGridView1
+            // ordID
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(25, 19);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(305, 150);
-            this.dataGridView1.TabIndex = 4;
+            this.ordID.Text = "OrderId";
             // 
-            // Form1
+            // StoreArea
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(749, 463);
+            this.ClientSize = new System.Drawing.Size(811, 463);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Name = "Form1";
+            this.Name = "StoreArea";
             this.Text = "Store";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -202,6 +209,7 @@
         private System.Windows.Forms.ColumnHeader OrderTitle;
         private System.Windows.Forms.ColumnHeader Quantity;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.ColumnHeader ordID;
     }
 }
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApp.Data;
-using WebApp.Models;
+using Common.Models;
 
 namespace WebApp.Controllers
 {
@@ -36,6 +36,23 @@ namespace WebApp.Controllers
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {
                 Client c = unitOfWork.Clients.GetWithRelated(id);
+                if (c != null)
+                {
+                    return Ok(c);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+        }
+
+        [HttpGet("GetClientByEmail")]
+        public ActionResult<Client> GetClientByEmail(string email)
+        {
+            using (UnitOfWork unitOfWork = new UnitOfWork(_context))
+            {
+                Client c = unitOfWork.Clients.GetByEmail(email);
                 if (c != null)
                 {
                     return Ok(c);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApp.Models;
+using Common.Models;
 
 namespace WebApp.Data.Repositories
 {
