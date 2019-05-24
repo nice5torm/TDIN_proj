@@ -10,8 +10,8 @@ using WebApp.Data;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190518001536_Initial")]
-    partial class Initial
+    [Migration("20190524225421_Inital")]
+    partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace WebApp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("WebApp.Models.Book", b =>
+            modelBuilder.Entity("Common.Models.Book", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,9 +36,25 @@ namespace WebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Books");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Amount = 2,
+                            Price = 12.0,
+                            Title = "Livro"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Amount = 4,
+                            Price = 20.0,
+                            Title = "Dicionário"
+                        });
                 });
 
-            modelBuilder.Entity("WebApp.Models.Client", b =>
+            modelBuilder.Entity("Common.Models.Client", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -53,9 +69,18 @@ namespace WebApp.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Clients");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Address = "Rua 123",
+                            Email = "maria@mail.com",
+                            Name = "Maria"
+                        });
                 });
 
-            modelBuilder.Entity("WebApp.Models.Order", b =>
+            modelBuilder.Entity("Common.Models.Order", b =>
                 {
                     b.Property<int>("GUID")
                         .ValueGeneratedOnAdd()
@@ -84,7 +109,7 @@ namespace WebApp.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("WebApp.Models.Sale", b =>
+            modelBuilder.Entity("Common.Models.Sale", b =>
                 {
                     b.Property<int>("GUID")
                         .ValueGeneratedOnAdd()
@@ -105,24 +130,24 @@ namespace WebApp.Migrations
                     b.ToTable("Sales");
                 });
 
-            modelBuilder.Entity("WebApp.Models.Order", b =>
+            modelBuilder.Entity("Common.Models.Order", b =>
                 {
-                    b.HasOne("WebApp.Models.Book", "Book")
+                    b.HasOne("Common.Models.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId");
 
-                    b.HasOne("WebApp.Models.Client", "Client")
+                    b.HasOne("Common.Models.Client", "Client")
                         .WithMany("OrdersClient")
                         .HasForeignKey("ClientId");
                 });
 
-            modelBuilder.Entity("WebApp.Models.Sale", b =>
+            modelBuilder.Entity("Common.Models.Sale", b =>
                 {
-                    b.HasOne("WebApp.Models.Book", "Book")
+                    b.HasOne("Common.Models.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId");
 
-                    b.HasOne("WebApp.Models.Client", "Client")
+                    b.HasOne("Common.Models.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId");
                 });

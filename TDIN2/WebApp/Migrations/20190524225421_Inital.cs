@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebApp.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Inital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -95,6 +95,21 @@ namespace WebApp.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Books",
+                columns: new[] { "Id", "Amount", "Price", "Title" },
+                values: new object[] { 1, 2, 12.0, "Livro" });
+
+            migrationBuilder.InsertData(
+                table: "Books",
+                columns: new[] { "Id", "Amount", "Price", "Title" },
+                values: new object[] { 2, 4, 20.0, "Dicionário" });
+
+            migrationBuilder.InsertData(
+                table: "Clients",
+                columns: new[] { "ID", "Address", "Email", "Name" },
+                values: new object[] { 1, "Rua 123", "maria@mail.com", "Maria" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_BookId",

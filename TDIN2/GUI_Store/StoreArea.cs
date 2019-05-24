@@ -39,7 +39,7 @@ namespace GUI_Store
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:2222/");
-            HttpResponseMessage response = client.GetAsync("api/Book/GetBookByName/" + textBox1.Text).Result;
+            HttpResponseMessage response = client.GetAsync("api/Book/GetBookByName?title=" + textBox1.Text).Result;
 
             if (textBox1.Text == "")
             {
@@ -51,6 +51,7 @@ namespace GUI_Store
                 if (response.IsSuccessStatusCode)
                 {
                     OrderCreation orderCreation = new OrderCreation(response.Content.ReadAsAsync<Book>().Result.Id);
+                    orderCreation.ShowDialog(); 
                 }
                 else
                 {
@@ -66,7 +67,7 @@ namespace GUI_Store
             client.BaseAddress = new Uri("http://localhost:2222/");
 
             int rowindex = dataGridView2.CurrentCell.RowIndex;
-            HttpResponseMessage response = client.GetAsync("api/Book/GetBook/" + dataGridView2.Rows[rowindex].Cells[0].Value).Result;
+            HttpResponseMessage response = client.GetAsync("api/Book/GetBook?id=" + dataGridView2.Rows[rowindex].Cells[0].Value).Result;
 
             if (dataGridView2.SelectedCells.Count == 0)
             {
@@ -77,7 +78,8 @@ namespace GUI_Store
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    OrderCreation orderCreation = new OrderCreation(response.Content.ReadAsAsync<Book>().Result.Id);
+                    OrderCreation orderCreation = new OrderCreation(Convert.ToInt32(dataGridView2.Rows[dataGridView2.CurrentCell.RowIndex].Cells[0].Value.ToString()));
+                    orderCreation.ShowDialog();
                 }
                 else
                 {
