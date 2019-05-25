@@ -171,7 +171,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(183, 95);
+            this.label5.Location = new System.Drawing.Point(208, 95);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(42, 18);
             this.label5.TabIndex = 7;
@@ -181,11 +181,11 @@
             // 
             this.price.AutoSize = true;
             this.price.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.price.Location = new System.Drawing.Point(246, 95);
+            this.price.Location = new System.Drawing.Point(266, 95);
             this.price.Name = "price";
-            this.price.Size = new System.Drawing.Size(44, 18);
+            this.price.Size = new System.Drawing.Size(24, 18);
             this.price.TabIndex = 8;
-            this.price.Text = "00.00";
+            this.price.Text = "00";
             // 
             // OrderCreation
             // 
@@ -203,6 +203,7 @@
             this.Controls.Add(this.booktitle);
             this.Name = "OrderCreation";
             this.Text = "Order Creation";
+            this.Load += new System.EventHandler(this.OrderCreation_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

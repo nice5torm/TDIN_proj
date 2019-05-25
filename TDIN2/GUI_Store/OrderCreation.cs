@@ -16,16 +16,17 @@ namespace GUI_Store
 {
     public partial class OrderCreation : Form
     {
+        public int publicid;
+        public HttpClient client = new HttpClient();
+
         public OrderCreation(int id)
         {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("http://localhost:2222/");        
+            client.BaseAddress = new Uri("http://localhost:2222/");
+            publicid = id;
 
             InitializeComponent();
 
-            this.booktitle.Text = client.GetAsync("api/Book/GetBook?id=" + id).Result.Content.ReadAsAsync<Book>().Result.Title;
-            this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + id).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
-            this.price.Text = client.GetAsync("api/Book/GetBook?id=" + id).Result.Content.ReadAsAsync<Book>().Result.Price.ToString();
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -53,27 +54,27 @@ namespace GUI_Store
                         Title = booktitle.Text
                     };
 
-                    client.PostAsJsonAsync("api/Sale/CreateSale", book);
-
                     if (client.PostAsJsonAsync("api/Sale/CreateSale", sale).Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Sale made with sucess!", "Sucess sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
 
                     client.PutAsJsonAsync("api/Book/EditBook", book);
-                    this.stock.Text = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
+                    //this.stock.Text = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
+                    this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
+
                 }
                 else
                 {
                     Order order = new Order()
                     {
+                        OrderStatus = OrderStatusEnum.Wainting_expedition,
+                        OrderType = OrderTypeEnum.Store, 
                         Quantity = Convert.ToInt32(numericUpDown1.Value),
                         ClientId = client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.Content.ReadAsAsync<Client>().Result.ID,
                         BookId = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
                     };
 
-
-                    client.PostAsJsonAsync("api/Order/CreateOrder", order);
                     if (client.PostAsJsonAsync("api/Order/CreateOrder", order).Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Order made with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -108,20 +109,22 @@ namespace GUI_Store
                         Title = booktitle.Text
                     };
                     
-                    client.PostAsJsonAsync("api/Sale/CreateSale", sale);
                     if(client.PostAsJsonAsync("api/Sale/CreateSale",sale).Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Sale made with sucess!", "Sucess Sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
 
                     client.PutAsJsonAsync("api/Book/EditBook", book);
-                    this.stock.Text = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
+                    //this.stock.Text = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
+                    this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
 
                 }
                 else
                 {
                     Order order = new Order()
                     {
+                        OrderStatus = OrderStatusEnum.Wainting_expedition,
+                        OrderType = OrderTypeEnum.Store,
                         Quantity = Convert.ToInt32(numericUpDown1.Value),
                         Client = new  Client()
                         {
@@ -132,9 +135,6 @@ namespace GUI_Store
                         BookId = client.GetAsync("api/Book/GetBookByName?title="+ booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
                     };
 
-
-                    client.PostAsJsonAsync("api/Order/CreateOrder", order);
-
                     if(client.PostAsJsonAsync("api/Order/CreateOrder", order).Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Order made with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -144,6 +144,19 @@ namespace GUI_Store
 
                 } 
             }           
+        }
+
+        private void OrderCreation_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+        }
+
+
+        private void OrderCreation_Load(object sender, EventArgs e)
+        {
+            this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
+            this.booktitle.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Title;
+            this.price.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Price.ToString();
         }
     }
 }

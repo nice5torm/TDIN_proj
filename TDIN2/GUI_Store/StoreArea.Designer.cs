@@ -46,12 +46,12 @@
             // 
             this.textBox1.Location = new System.Drawing.Point(25, 22);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(330, 20);
+            this.textBox1.Size = new System.Drawing.Size(299, 20);
             this.textBox1.TabIndex = 1;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(361, 20);
+            this.button1.Location = new System.Drawing.Point(340, 20);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(98, 23);
             this.button1.TabIndex = 1;
@@ -77,7 +77,7 @@
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Location = new System.Drawing.Point(9, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(487, 446);
+            this.groupBox1.Size = new System.Drawing.Size(465, 446);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Sales Area";
@@ -92,7 +92,7 @@
             this.dataGridView2.ReadOnly = true;
             this.dataGridView2.RowHeadersWidth = 20;
             this.dataGridView2.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView2.Size = new System.Drawing.Size(434, 326);
+            this.dataGridView2.Size = new System.Drawing.Size(413, 326);
             this.dataGridView2.TabIndex = 5;
             // 
             // groupBox2
