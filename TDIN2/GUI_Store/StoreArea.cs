@@ -39,7 +39,7 @@ namespace GUI_Store
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:2222/");
-            HttpResponseMessage response = client.GetAsync("api/Book/GetBookByName?title=" + textBox1.Text).Result;
+            HttpResponseMessage response = client.GetAsync("api/Book/GetBookByTitle?title=" + textBox1.Text).Result;
 
             if (textBox1.Text == "")
             {

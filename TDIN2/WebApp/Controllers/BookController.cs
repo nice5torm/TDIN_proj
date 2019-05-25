@@ -47,8 +47,8 @@ namespace WebApp.Controllers
             }
         }
 
-        [HttpGet("GetBookByName")]
-        public ActionResult<Book> GetBookByName(string title)
+        [HttpGet("GetBookByTitle")]
+        public ActionResult<Book> GetBookByTitle(string title)
         {
             using (UnitOfWork unitOfWork = new UnitOfWork(_context))
             {

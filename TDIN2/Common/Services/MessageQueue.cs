@@ -11,40 +11,41 @@ namespace Common.Services
 {
     public static class MessageQueue
     {
-        private static ConnectionFactory factory = new ConnectionFactory() { HostName = "localhost" };
-        private static string warehouse = "warehouse";          //TODO
+        static ConnectionFactory factory = new ConnectionFactory() { HostName = "localhost" };
 
-        public static void SendMessageToWarehouse(int id, string title, int quantity)     //TODO
+        public static void SendMessageToWarehouse(string title, int quantity)     //TODO
         {
 
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            using (IConnection connection = factory.CreateConnection())
+            using (IModel channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: warehouse,              //TODO
+                channel.QueueDeclare(queue: "warehouse",              //TODO
                                      durable: false,
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
 
-                string message = JsonConvert.SerializeObject(new StoreMessage(id, title, quantity));      
+                string message = JsonConvert.SerializeObject(new StoreMessage( title, quantity));      
                 var body = Encoding.UTF8.GetBytes(message);
 
                 channel.BasicPublish(exchange: "",
-                                     routingKey: warehouse,                     //TODO
+                                     routingKey: "warehouse",                     //TODO
                                      basicProperties: null,
                                      body: body);
             }
         }
 
-        private class StoreMessage
+        public class StoreMessage
         {
+            private static int IdCounter = 1;
+
             public int id { get; set; }
             public string title { get; set; }
             public int quantity { get; set; }
 
-            public StoreMessage(int i, string t, int q)
+            public StoreMessage( string t, int q)
             {
-                id = i;
+                id = IdCounter++;
                 title = t;
                 quantity = q;
             }

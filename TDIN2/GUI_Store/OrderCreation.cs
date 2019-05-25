@@ -43,13 +43,13 @@ namespace GUI_Store
                     {
                         Quantity = Convert.ToInt32(numericUpDown1.Value),
                         ClientId = client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.Content.ReadAsAsync<Client>().Result.ID,
-                        BookId = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
+                        BookId = client.GetAsync("api/Book/GetBookByTitle?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
                     };
 
                     Book book = new Book()
                     {
-                        Id = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id,
-                        Amount = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Amount - Convert.ToInt32(numericUpDown1.Value),
+                        Id = client.GetAsync("api/Book/GetBookByTitle?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id,
+                        Amount = client.GetAsync("api/Book/GetBookByTitle?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Amount - Convert.ToInt32(numericUpDown1.Value),
                         Price = Convert.ToInt32(price.Text),
                         Title = booktitle.Text
                     };
@@ -57,11 +57,14 @@ namespace GUI_Store
                     if (client.PostAsJsonAsync("api/Sale/CreateSale", sale).Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Sale made with sucess!", "Sucess sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        client.PutAsJsonAsync("api/Book/EditBook", book);
+
+                        //atualizar o stock na janela e atualizar na storearea
+
+                        this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
                     }
 
-                    client.PutAsJsonAsync("api/Book/EditBook", book);
-                    //this.stock.Text = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
-                    this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
+                    
 
                 }
                 else
@@ -72,16 +75,17 @@ namespace GUI_Store
                         OrderType = OrderTypeEnum.Store, 
                         Quantity = Convert.ToInt32(numericUpDown1.Value),
                         ClientId = client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.Content.ReadAsAsync<Client>().Result.ID,
-                        BookId = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
+                        BookId = client.GetAsync("api/Book/GetBookByTitle?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
                     };
 
-                    if (client.PostAsJsonAsync("api/Order/CreateOrder", order).Result.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (client.PostAsJsonAsync("api/Order/CreateOrder",order).Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Order made with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                        MessageQueue.SendMessageToWarehouse(booktitle.Text, Convert.ToInt32(numericUpDown1.Value));
+                   
                     }
 
-                    MessageQueue.SendMessageToWarehouse(order.GUID, booktitle.Text, Convert.ToInt32(numericUpDown1.Value));
 
                 }
             }
@@ -98,12 +102,12 @@ namespace GUI_Store
                             Email = textBox2.Text,
                             Address = textBox3.Text
                         },
-                        BookId = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
+                        BookId = client.GetAsync("api/Book/GetBookByTitle?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
                     };
 
                     Book book = new Book()
                     {
-                        Id = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id,
+                        Id = client.GetAsync("api/Book/GetBookByTitle?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id,
                         Amount = Convert.ToInt32(stock.Text) - Convert.ToInt32(numericUpDown1.Value),
                         Price = Convert.ToInt32(price.Text),
                         Title = booktitle.Text
@@ -112,11 +116,15 @@ namespace GUI_Store
                     if(client.PostAsJsonAsync("api/Sale/CreateSale",sale).Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Sale made with sucess!", "Sucess Sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        client.PutAsJsonAsync("api/Book/EditBook", book);
+
+                        //atualizar o stock na janela e atualizar na storearea
+
+                        this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
                     }
 
-                    client.PutAsJsonAsync("api/Book/EditBook", book);
-                    //this.stock.Text = client.GetAsync("api/Book/GetBookByName?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
-                    this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
+                    
 
                 }
                 else
@@ -132,25 +140,21 @@ namespace GUI_Store
                             Email = textBox2.Text,
                             Address = textBox3.Text
                         },
-                        BookId = client.GetAsync("api/Book/GetBookByName?title="+ booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
+                        BookId = client.GetAsync("api/Book/GetBookByTitle?title="+ booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
                     };
 
                     if(client.PostAsJsonAsync("api/Order/CreateOrder", order).Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Order made with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        MessageQueue.SendMessageToWarehouse(booktitle.Text,Convert.ToInt32(numericUpDown1.Value));
+
                     }
 
-                    MessageQueue.SendMessageToWarehouse(order.GUID,booktitle.Text,Convert.ToInt32(numericUpDown1.Value));
 
                 } 
             }           
         }
-
-        private void OrderCreation_FormClosed(object sender, FormClosedEventArgs e)
-        {
-
-        }
-
 
         private void OrderCreation_Load(object sender, EventArgs e)
         {
