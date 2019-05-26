@@ -34,12 +34,14 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.OrderTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Quantity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button3 = new System.Windows.Forms.Button();
+            this.OrderId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox1
@@ -61,7 +63,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(202, 407);
+            this.button2.Location = new System.Drawing.Point(191, 407);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(80, 33);
             this.button2.TabIndex = 3;
@@ -97,7 +99,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.dataGridView1);
+            this.groupBox2.Controls.Add(this.listView1);
             this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.Location = new System.Drawing.Point(502, 12);
             this.groupBox2.Name = "groupBox2";
@@ -106,23 +108,49 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Orders Management";
             // 
-            // dataGridView1
+            // listView1
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(31, 23);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(363, 379);
-            this.dataGridView1.TabIndex = 4;
+            this.listView1.Activation = System.Windows.Forms.ItemActivation.OneClick;
+            this.listView1.AllowColumnReorder = true;
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.OrderTitle,
+            this.Quantity,
+            this.OrderId});
+            this.listView1.FullRowSelect = true;
+            this.listView1.GridLines = true;
+            this.listView1.HideSelection = false;
+            this.listView1.Location = new System.Drawing.Point(27, 35);
+            this.listView1.MultiSelect = false;
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(367, 366);
+            this.listView1.TabIndex = 4;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // OrderTitle
+            // 
+            this.OrderTitle.DisplayIndex = 0;
+            this.OrderTitle.Text = "Title";
+            this.OrderTitle.Width = 240;
+            // 
+            // Quantity
+            // 
+            this.Quantity.DisplayIndex = 1;
+            this.Quantity.Text = "Quantity";
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(182, 407);
+            this.button3.Location = new System.Drawing.Point(170, 407);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(80, 33);
             this.button3.TabIndex = 3;
             this.button3.Text = "Accept";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // OrderId
+            // 
+            this.OrderId.Text = "OrderId";
             // 
             // StoreArea
             // 
@@ -137,7 +165,6 @@
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -149,8 +176,11 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.DataGridView dataGridView1;
         public System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ColumnHeader OrderTitle;
+        private System.Windows.Forms.ColumnHeader Quantity;
+        private System.Windows.Forms.ColumnHeader OrderId;
     }
 }
 

@@ -21,7 +21,7 @@ namespace GUI_Store
 
         public OrderCreation(int id)
         {
-            client.BaseAddress = new Uri("http://localhost:2222/");
+            //client.BaseAddress = new Uri("http://localhost:2222/");
             publicid = id;
 
             InitializeComponent();
@@ -32,6 +32,7 @@ namespace GUI_Store
         private void button1_Click(object sender, EventArgs e)
         {
             HttpClient client = new HttpClient();
+        
             client.BaseAddress = new Uri("http://localhost:2222/");
 
             if(client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.IsSuccessStatusCode)
@@ -78,11 +79,13 @@ namespace GUI_Store
                         BookId = client.GetAsync("api/Book/GetBookByTitle?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
                     };
 
-                    if (client.PostAsJsonAsync("api/Order/CreateOrder",order).Result.StatusCode == System.Net.HttpStatusCode.OK)
+                    HttpResponseMessage result = client.PostAsJsonAsync("api/Order/CreateOrder", order).Result;
+
+                    if (result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Order made with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        MessageQueue.SendMessageToWarehouse(booktitle.Text, Convert.ToInt32(numericUpDown1.Value));
+                        MessageQueue.SendMessageToWarehouse(booktitle.Text, Convert.ToInt32(numericUpDown1.Value)+10, result.Content.ReadAsAsync<Order>().Result.GUID);
                    
                     }
 
@@ -142,12 +145,12 @@ namespace GUI_Store
                         },
                         BookId = client.GetAsync("api/Book/GetBookByTitle?title="+ booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
                     };
-
-                    if(client.PostAsJsonAsync("api/Order/CreateOrder", order).Result.StatusCode == System.Net.HttpStatusCode.OK)
+                    HttpResponseMessage result = client.PostAsJsonAsync("api/Order/CreateOrder", order).Result;
+                    if (result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Order made with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        MessageQueue.SendMessageToWarehouse(booktitle.Text,Convert.ToInt32(numericUpDown1.Value));
+                        MessageQueue.SendMessageToWarehouse(booktitle.Text,Convert.ToInt32(numericUpDown1.Value)+10,result.Content.ReadAsAsync<Order>().Result.GUID);
 
                     }
 
@@ -158,6 +161,10 @@ namespace GUI_Store
 
         private void OrderCreation_Load(object sender, EventArgs e)
         {
+            HttpClient client = new HttpClient();
+
+            client.BaseAddress = new Uri("http://localhost:2222/");
+
             this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
             this.booktitle.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Title;
             this.price.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Price.ToString();

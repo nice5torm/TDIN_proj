@@ -12,6 +12,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Models;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using static Common.Services.MessageQueue;
 
 namespace GUI_Store
 {
@@ -23,16 +27,55 @@ namespace GUI_Store
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:2222/");
 
+            InitializeComponent();
+
             HttpResponseMessage responsebook = client.GetAsync("api/Book/GetBooks").Result;
             var book = responsebook.Content.ReadAsAsync<IEnumerable<Book>>().Result;
 
-            HttpResponseMessage responseorder = client.GetAsync("api/Order/getOrders").Result;
-            var order = responseorder.Content.ReadAsAsync<IEnumerable<Order>>().Result.Where(o => o.OrderStatus == OrderStatusEnum.Wainting_expedition);
-
-            InitializeComponent();
             this.dataGridView2.DataSource = book;
-            this.dataGridView1.DataSource = order;
 
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+                channel.QueueDeclare(queue: "store",
+                                 durable: false,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+                var consumer = new EventingBasicConsumer(channel);
+
+                channel.BasicConsume("store", false, "", false, false, null, consumer);
+                //listView1.Items.Add(channel.BasicConsume("store", false, "", false, false, null, consumer).ToString());
+                consumer.Model.MessageCount("store");
+                consumer.Received += (model, ea) =>
+                {
+                    var body = ea.Body;
+                    var message = Encoding.UTF8.GetString(body);
+                    //listView1.Items.Add(message);
+                    int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
+                    string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
+                    int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
+                    //listView1.Items.Add( orderid.ToString());
+                       
+                    if (listView1.InvokeRequired)
+                    {
+
+                        listView1.Invoke((MethodInvoker)delegate ()
+                        {
+                            listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString()}));
+                        });
+                    }
+                    else
+                    {
+                        listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
+                    }
+                };
+            }
+
+        
         }
 
         private void button1_Click(object sender, EventArgs e)

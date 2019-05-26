@@ -82,7 +82,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost("CreateOrder")]
-        public ActionResult<string> CreateOrder([FromBody] Order model)     
+        public ActionResult<Order> CreateOrder([FromBody] Order model)     
         {
             if (!ModelState.IsValid)
             {
@@ -94,7 +94,7 @@ namespace WebApp.Controllers
                 {
                     unitOfWork.Orders.Add(model);
                     unitOfWork.Complete();
-                    return Ok();
+                    return Ok(model);
                 }
                 catch (Exception)
                 {
@@ -102,6 +102,29 @@ namespace WebApp.Controllers
                 }
             }
             
+        }
+
+        [HttpPut("EditOrder")]
+        public ActionResult<string> EditOrder([FromBody] Order model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Pedido Inválido");
+            }
+
+            using (UnitOfWork unitOfWork = new UnitOfWork(_context))
+            {
+                try
+                {
+                    unitOfWork.Orders.Update(model);
+                    unitOfWork.Complete();
+                    return Ok();
+                }
+                catch (Exception)
+                {
+                    return BadRequest("Erro ao editar");
+                }
+            }
         }
 
         [HttpDelete("DeleteOrder")]
