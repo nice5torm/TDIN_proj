@@ -84,9 +84,14 @@ namespace GUI_Store
                     if (result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Order made with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                        
+                        //Message Queue
                         MessageQueue.SendMessageToWarehouse(booktitle.Text, Convert.ToInt32(numericUpDown1.Value)+10, result.Content.ReadAsAsync<Order>().Result.GUID);
-                   
+
+                        //Email Sender
+                        EmailSender.SendEmail(textBox2.Text, "Order Creation Information", 
+                            "You just ordered the book: " + booktitle.Text+ " the cost is "+ price.Text + ". You ordered " + numericUpDown1.Value + ". The total price is " + Convert.ToInt32(numericUpDown1.Value) * Convert.ToInt32(price.Text)+ " . The Order status is  Waiting Expedition");
+                        
                     }
 
 
@@ -152,6 +157,8 @@ namespace GUI_Store
 
                         MessageQueue.SendMessageToWarehouse(booktitle.Text,Convert.ToInt32(numericUpDown1.Value)+10,result.Content.ReadAsAsync<Order>().Result.GUID);
 
+                        EmailSender.SendEmail(textBox2.Text, "Order Creation Information",
+                           "You just ordered the book: " + booktitle.Text + "the cost is " + price.Text + ". You ordered " + numericUpDown1.Value + ". The total price is " + Convert.ToInt32(numericUpDown1.Value) * Convert.ToInt32(price.Text) + " . The Order status is  Waiting Expedition");
                     }
 
 

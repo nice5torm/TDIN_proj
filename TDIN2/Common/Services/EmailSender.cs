@@ -9,10 +9,10 @@ namespace Common.Services
 {
     public class EmailSender
     {
-        static string gmailUser = "TDINPorj2@gmail.com";
-        static string gmailPassword = "TDIN123";
+        static string gmailUser = "tdin2019proj.2@gmail.com";
+        static string gmailPassword = "TDIN1234";
 
-        public void SendEmail(string toEmail, string subject, string body)
+        public static void SendEmail(string toEmail, string subject, string body)
         {
             try
             {

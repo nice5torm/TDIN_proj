@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Models;
+using Common.Services;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -21,7 +22,7 @@ namespace GUI_Store
 {
     public partial class StoreArea : Form
     {
-       
+
         public StoreArea()
         {
             HttpClient client = new HttpClient();
@@ -59,23 +60,27 @@ namespace GUI_Store
                     string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
                     int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
                     //listView1.Items.Add( orderid.ToString());
-                       
-                    if (listView1.InvokeRequired)
-                    {
 
-                        listView1.Invoke((MethodInvoker)delegate ()
+                    //if (client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Store)
+                    //{
+                        if (listView1.InvokeRequired)
                         {
-                            listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString()}));
-                        });
-                    }
-                    else
-                    {
-                        listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
-                    }
+
+                            listView1.Invoke((MethodInvoker)delegate ()
+                            {
+                                listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
+                            });
+                        }
+                        else
+                        {
+                            listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
+                        }
+                   // }
+                    
                 };
             }
 
-        
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -94,12 +99,12 @@ namespace GUI_Store
                 if (response.IsSuccessStatusCode)
                 {
                     OrderCreation orderCreation = new OrderCreation(response.Content.ReadAsAsync<Book>().Result.Id);
-                    orderCreation.ShowDialog(); 
+                    orderCreation.ShowDialog();
                 }
                 else
                 {
                     MessageBox.Show("that book doesn't exist", "Insufficient data", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return; 
+                    return;
                 }
             }
         }
@@ -134,7 +139,63 @@ namespace GUI_Store
 
         private void button3_Click(object sender, EventArgs e)
         {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:2222/");
+            if (listView1.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("select something", "not found order", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+            }
+            else if (listView1.SelectedItems.Count > 0)
+            {
+                string title = Convert.ToString(listView1.SelectedItems[0].SubItems[0].Text);
+                int quantity = Convert.ToInt32(listView1.SelectedItems[0].SubItems[1].Text);
+                int orderid = Convert.ToInt32(listView1.SelectedItems[0].SubItems[2].Text);
+
+                //if (client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Store)
+                //{
+                    Order order = new Order()
+                    {
+                        BookId = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.BookId,
+                        Book = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Book,
+                        ClientId = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId,
+                        Client = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Client,
+                        Quantity = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity,
+                        GUID = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.GUID,
+                        OrderType = OrderTypeEnum.Store,
+                        OrderStatus = OrderStatusEnum.Dispatched,
+                        DispatchOccurence = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.DispatchOccurence,
+                        DispatchedDate = DateTime.Now.AddDays(1)
+                    };
+
+                    Book book = new Book()
+                    {
+                        Id = client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Id,
+                        Amount = 10 + client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Amount,
+                        Price = client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Price,
+                        Title = title
+                    };
+
+                HttpResponseMessage response = client.PutAsJsonAsync("api/Order/EditOrder", order).Result;
+                    //HttpResponseMessage responsebook = client.PutAsJsonAsync("api/Book/EditBook", bookstore).Result;
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        MessageBox.Show("Order sent with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
+                client.PutAsJsonAsync("api/Book/EditBook", book);
+                //if (client.PutAsJsonAsync("api/Book/EditBook", book).Result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                //{
+                //    MessageBox.Show("notthat", "not found sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //}
+                //if(responsebook.StatusCode == System.Net.HttpStatusCode.OK)
+                //{
+                //    MessageBox.Show("Updated Stock", "Stock Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //}
+
+                //}
+            }
         }
+
     }
 }
