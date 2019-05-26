@@ -177,21 +177,21 @@ namespace GUI_Store
                     };
 
                 HttpResponseMessage response = client.PutAsJsonAsync("api/Order/EditOrder", order).Result;
-                    //HttpResponseMessage responsebook = client.PutAsJsonAsync("api/Book/EditBook", bookstore).Result;
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Order sent with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
 
                 client.PutAsJsonAsync("api/Book/EditBook", book);
-                //if (client.PutAsJsonAsync("api/Book/EditBook", book).Result.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                //{
-                //    MessageBox.Show("notthat", "not found sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                //}
-                //if(responsebook.StatusCode == System.Net.HttpStatusCode.OK)
-                //{
-                //    MessageBox.Show("Updated Stock", "Stock Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                //}
+
+                int clientId = Convert.ToInt32(client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId);
+                string emailClient = client.GetAsync("api/Client/GetClient?id=" + clientId).Result.Content.ReadAsAsync<Client>().Result.Email;
+                int quantityEmail = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity;
+                double priceEmail = client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Price;
+
+
+                EmailSender.SendEmail(emailClient, "Order Status",
+                            "The book you ordered " + title + " which cost is " + priceEmail + ", and you ordered " + quantityEmail + ". The total price is " + priceEmail * quantityEmail + " . The Order status is Dispached on the date: " + DateTime.Now.AddDays(1));
 
                 //}
             }
