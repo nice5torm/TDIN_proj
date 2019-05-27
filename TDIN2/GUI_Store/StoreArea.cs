@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Models;
+using Common;
 using Common.Services;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -22,15 +23,32 @@ namespace GUI_Store
 {
     public partial class StoreArea : Form
     {
+        INotifier notifier;
+
+        Repeater evRepeater;
+
+        delegate void UpdateDelegate();
+
 
         public StoreArea()
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:2222/");
 
+            //RemotingConfiguration.Configure("GUI_Store.exe.config", false);
+
             InitializeComponent();
 
+            notifier = (INotifier)RemoteNew.New(typeof(INotifier));
+
+            evRepeater = new Repeater();
+            evRepeater.alterEvent += new AlterDelegate(DoAlterations);
+            notifier.alterEvent += new AlterDelegate(evRepeater.RepeaterAll);
+
+            
+
             HttpResponseMessage responsebook = client.GetAsync("api/Book/GetBooks").Result;
+            //HttpResponseMessage responsebook = notifier.GetBookResponse();
             var book = responsebook.Content.ReadAsAsync<IEnumerable<Book>>().Result;
 
             this.dataGridView2.DataSource = book;
@@ -49,21 +67,19 @@ namespace GUI_Store
                 var consumer = new EventingBasicConsumer(channel);
 
                 channel.BasicConsume("store", false, "", false, false, null, consumer);
-                //listView1.Items.Add(channel.BasicConsume("store", false, "", false, false, null, consumer).ToString());
                 consumer.Model.MessageCount("store");
                 consumer.Received += (model, ea) =>
                 {
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
-                    //listView1.Items.Add(message);
                     int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
                     string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
                     int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
-                    //listView1.Items.Add( orderid.ToString());
 
                     //if (client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Store)
+                    //if (GetOrderType(orderid) == OrderTypeEnum.Store)
                     //{
-                        if (listView1.InvokeRequired)
+                    if (listView1.InvokeRequired)
                         {
 
                             listView1.Invoke((MethodInvoker)delegate ()
@@ -85,9 +101,10 @@ namespace GUI_Store
 
         private void button1_Click(object sender, EventArgs e)
         {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("http://localhost:2222/");
-            HttpResponseMessage response = client.GetAsync("api/Book/GetBookByTitle?title=" + textBox1.Text).Result;
+            //HttpClient client = new HttpClient();
+            //client.BaseAddress = new Uri("http://localhost:2222/");
+            //HttpResponseMessage response = client.GetAsync("api/Book/GetBookByTitle?title=" + textBox1.Text).Result;
+            //HttpResponseMessage response =  notifier.GetBookResponseByTitle(textBox1.Text).Result;
 
             if (textBox1.Text == "")
             {
@@ -96,9 +113,9 @@ namespace GUI_Store
             }
             else
             {
-                if (response.IsSuccessStatusCode)
+                if (notifier.GetBookResponseByTitle(textBox1.Text))
                 {
-                    OrderCreation orderCreation = new OrderCreation(response.Content.ReadAsAsync<Book>().Result.Id);
+                    OrderCreation orderCreation = new OrderCreation(notifier.GetIdBookByTitle(textBox1.Text));
                     orderCreation.ShowDialog();
                 }
                 else
@@ -124,7 +141,8 @@ namespace GUI_Store
             }
             else
             {
-                if (response.IsSuccessStatusCode)
+                //if (notifier.GetBookResponseById(Convert.ToInt32(dataGridView2.Rows[rowindex].Cells[0].Value)))
+                if(response.IsSuccessStatusCode)
                 {
                     OrderCreation orderCreation = new OrderCreation(Convert.ToInt32(dataGridView2.Rows[dataGridView2.CurrentCell.RowIndex].Cells[0].Value.ToString()));
                     orderCreation.ShowDialog();
@@ -156,38 +174,52 @@ namespace GUI_Store
                 //{
                     Order order = new Order()
                     {
-                        BookId = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.BookId,
-                        Book = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Book,
-                        ClientId = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId,
-                        Client = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Client,
-                        Quantity = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity,
-                        GUID = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.GUID,
+                        //BookId = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.BookId,
+                        BookId = notifier.GetOrderBookId(orderid),
+                        //Book = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Book,
+                        Book = notifier.GetOrderBook(orderid),
+                        //ClientId = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId,
+                        ClientId = notifier.GetOrderClientId(orderid),
+                        //Client = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Client,
+                        Client = notifier.GetOrderClient(orderid),
+                        //Quantity = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity,
+                        Quantity = notifier.GetOrderQuantity(orderid),
+                        GUID = orderid,
                         OrderType = OrderTypeEnum.Store,
                         OrderStatus = OrderStatusEnum.Dispatched,
-                        DispatchOccurence = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.DispatchOccurence,
+                        //DispatchOccurence = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.DispatchOccurence,
+                        DispatchOccurence = notifier.GetOrderDispatchOccurence(orderid),
                         DispatchedDate = DateTime.Now.AddDays(1)
                     };
 
                     Book book = new Book()
                     {
-                        Id = client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Id,
-                        Amount = 10 + client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Amount,
-                        Price = client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Price,
+                        //Id = client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Id,
+                        Id = notifier.GetIdBookByTitle(title),
+                        //Amount = 10 + client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Amount,
+                        Amount = 10 + notifier.GetAmountBookByTitle(title),
+                        //Price = client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Price,
+                        Price = notifier.GetPriceBookByTitle(title),
                         Title = title
                     };
 
-                HttpResponseMessage response = client.PutAsJsonAsync("api/Order/EditOrder", order).Result;
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        MessageBox.Show("Order sent with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                //HttpResponseMessage response = client.PutAsJsonAsync("api/Order/EditOrder", order).Result;
+                //HttpResponseMessage response = notifier.EditOrderResponse(order).Result;
+                if (notifier.EditOrderResponse(order))
+                {
+                   MessageBox.Show("Order sent with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
 
-                client.PutAsJsonAsync("api/Book/EditBook", book);
+                //client.PutAsJsonAsync("api/Book/EditBook", book);
 
-                int clientId = Convert.ToInt32(client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId);
-                string emailClient = client.GetAsync("api/Client/GetClient?id=" + clientId).Result.Content.ReadAsAsync<Client>().Result.Email;
-                int quantityEmail = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity;
-                double priceEmail = client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Price;
+                //int clientId = Convert.ToInt32(client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId);
+                int clientId = Convert.ToInt32(notifier.GetOrderClientId(orderid));
+                //string emailClient = client.GetAsync("api/Client/GetClient?id=" + clientId).Result.Content.ReadAsAsync<Client>().Result.Email;
+                string emailClient = notifier.GetClientEmail(clientId);
+                //int quantityEmail = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity;
+                int quantityEmail = notifier.GetOrderQuantity(orderid);
+                //double priceEmail = client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Price;
+                double priceEmail = notifier.GetPriceBookByTitle(title);
 
 
                 EmailSender.SendEmail(emailClient, "Order Status",
@@ -197,5 +229,107 @@ namespace GUI_Store
             }
         }
 
+        public void DoAlterations(Operation op)
+        {
+            UpdateDelegate UpdateBooks;
+            UpdateDelegate UpdateMessagesStore;
+
+            switch (op)
+            {
+                case Operation.UpdateBooks:
+                    UpdateBooks = new UpdateDelegate(UpdateBooksData);
+                    BeginInvoke(UpdateBooks);
+                    break;
+                case Operation.UpdateMessagesStore:
+                    UpdateMessagesStore = new UpdateDelegate(UpdateMessagesStoreList);
+                    BeginInvoke(UpdateMessagesStore);
+                    break;
+                    
+
+            }
+        }
+
+
+        private void UpdateBooksData()
+        {
+            HttpClient client = new HttpClient();
+
+            client.BaseAddress = new Uri("http://localhost:2222/");
+
+            HttpResponseMessage responsebook = client.GetAsync("api/Book/GetBooks").Result;
+            //HttpResponseMessage responsebook = GetBookResponse();
+            var book = responsebook.Content.ReadAsAsync<IEnumerable<Book>>().Result;
+
+            this.dataGridView2.DataSource = book;
+        }
+
+        private void UpdateMessagesStoreList()
+        {
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+                channel.QueueDeclare(queue: "store",
+                                 durable: false,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+                var consumer = new EventingBasicConsumer(channel);
+
+                channel.BasicConsume("store", false, "", false, false, null, consumer);
+                consumer.Model.MessageCount("store");
+                consumer.Received += (model, ea) =>
+                {
+                    var body = ea.Body;
+                    var message = Encoding.UTF8.GetString(body);
+                    int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
+                    string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
+                    int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
+
+                    //if (client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Store)
+                    //if (GetOrderType(orderid) == OrderTypeEnum.Store)
+                    //{
+                    if (listView1.InvokeRequired)
+                    {
+
+                        listView1.Invoke((MethodInvoker)delegate ()
+                        {
+                            listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
+                        });
+                    }
+                    else
+                    {
+                        listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
+                    }
+                    // }
+
+                };
+            }
+        }
+
+    }
+
+    class RemoteNew
+    {
+        private static Hashtable types = null;
+
+        private static void InitTypeTable()
+        {
+            types = new Hashtable();
+            foreach (WellKnownClientTypeEntry entry in RemotingConfiguration.GetRegisteredWellKnownClientTypes())
+                types.Add(entry.ObjectType, entry);
+        }
+
+        public static object New(Type type)
+        {
+            if (types == null)
+                InitTypeTable();
+            WellKnownClientTypeEntry entry = (WellKnownClientTypeEntry)types[type];
+            if (entry == null)
+                throw new RemotingException("Type not found!");
+            return RemotingServices.Connect(type, entry.ObjectUrl);
+        }
     }
 }
