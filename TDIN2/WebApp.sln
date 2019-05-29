@@ -9,11 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI_Warehouse", "GUI_Wareho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI_Store", "GUI_Store\GUI_Store.csproj", "{18AD0796-9A80-49BD-982E-896D3AC7E720}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{F096406C-10B1-4986-AC8B-9DE43B5057DD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteServer", "RemoteServer\RemoteServer.csproj", "{73D5838B-409C-4FA8-BCEE-3DED62F40A13}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifier", "RemoteNotifier\Notifier.csproj", "{E66EC565-004C-40CA-B50B-69287CCB3F22}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{F096406C-10B1-4986-AC8B-9DE43B5057DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,14 +33,6 @@ Global
 		{F096406C-10B1-4986-AC8B-9DE43B5057DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F096406C-10B1-4986-AC8B-9DE43B5057DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F096406C-10B1-4986-AC8B-9DE43B5057DD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{73D5838B-409C-4FA8-BCEE-3DED62F40A13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{73D5838B-409C-4FA8-BCEE-3DED62F40A13}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{73D5838B-409C-4FA8-BCEE-3DED62F40A13}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{73D5838B-409C-4FA8-BCEE-3DED62F40A13}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E66EC565-004C-40CA-B50B-69287CCB3F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E66EC565-004C-40CA-B50B-69287CCB3F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E66EC565-004C-40CA-B50B-69287CCB3F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E66EC565-004C-40CA-B50B-69287CCB3F22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
