@@ -1,31 +1,49 @@
 import * as React from 'react';
+import axios from 'axios';
 import { RouteComponentProps } from 'react-router';
 
-interface CounterState {
-    currentCount: number;
-}
 
-export class Counter extends React.Component<RouteComponentProps<{}>, CounterState> {
+export class Counter extends React.Component<RouteComponentProps<{}>, {}> {
     constructor() {
         super();
-        this.state = { currentCount: 0 };
+
+        this.state = {
+            email: '',
+            clientId: '',
+            orders: []
+        };
     }
 
+    handleGetClient(e: any) {
+        e.preventDefault();
+        this.setState(
+            { email: e.target.value }
+        )
+    }
+  
     public render() {
+        console.log(this.state);
         return <div>
-            <h1>Counter</h1>
+            <h1>Client Orders</h1>
 
-            <p>This is a simple example of a React component.</p>
+            <p>Please give your email</p>
 
-            <p>Current count: <strong>{ this.state.currentCount }</strong></p>
+            <form onSubmit={e => this.handleGetClient(e)}>
+                <label>
+                    Email:
+                    <input
+                        type="email"
+                        name="email"
+                        onChange={e => this.setState({ email: e.target.value })}
+                    />
+                </label>
+                <input type="submit" value="Submit" />
+            </form>
 
-            <button onClick={ () => { this.incrementCounter() } }>Increment</button>
+
         </div>;
     }
 
-    incrementCounter() {
-        this.setState({
-            currentCount: this.state.currentCount + 1
-        });
-    }
+   
+   
 }

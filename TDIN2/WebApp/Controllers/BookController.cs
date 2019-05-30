@@ -99,6 +99,7 @@ namespace WebApp.Controllers
             {
                 try
                 {
+
                     unitOfWork.Books.Update(model);
                     unitOfWork.Complete();
                     return Ok();

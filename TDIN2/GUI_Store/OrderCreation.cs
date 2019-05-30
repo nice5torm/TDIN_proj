@@ -25,11 +25,9 @@ namespace GUI_Store
             publicid = id;
 
             InitializeComponent();
-
-            
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             HttpClient client = new HttpClient();
         
@@ -58,15 +56,10 @@ namespace GUI_Store
                     if (client.PostAsJsonAsync("api/Sale/CreateSale", sale).Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Sale made with sucess!", "Sucess sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        client.PutAsJsonAsync("api/Book/EditBook", book);
-
-                        //atualizar o stock na janela e atualizar na storearea
-
-                        this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
+                        await client.PutAsJsonAsync("api/Book/EditBook", book);                       
                     }
-
-                    
-
+                    BookInfoLoad(publicid);
+                    //atualizar o stock na janela e atualizar na storearea
                 }
                 else
                 {
@@ -125,14 +118,13 @@ namespace GUI_Store
                     {
                         MessageBox.Show("Sale made with sucess!", "Sucess Sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        client.PutAsJsonAsync("api/Book/EditBook", book);
+                        await client.PutAsJsonAsync("api/Book/EditBook", book);
 
                         //atualizar o stock na janela e atualizar na storearea
-
-                        this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
                     }
+                    BookInfoLoad(publicid);
 
-                    
+
 
                 }
                 else
@@ -165,6 +157,19 @@ namespace GUI_Store
                 } 
             }           
         }
+
+        private async void BookInfoLoad(int id)
+        {
+            HttpClient client = new HttpClient();
+
+            client.BaseAddress = new Uri("http://localhost:2222/");
+
+            var response = await client.GetAsync("api/Book/GetBook?id=" + id);
+
+            this.stock.Text = response.Content.ReadAsAsync<Book>().Result.Amount.ToString();
+            
+        }
+
 
         private void OrderCreation_Load(object sender, EventArgs e)
         {

@@ -163,6 +163,7 @@
             this.Text = "Store";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.Load += new System.EventHandler(this.StoreArea_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);

@@ -29,58 +29,6 @@ namespace GUI_Store
             client.BaseAddress = new Uri("http://localhost:2222/");
 
             InitializeComponent();
-
-            HttpResponseMessage responsebook = client.GetAsync("api/Book/GetBooks").Result;
-            var book = responsebook.Content.ReadAsAsync<IEnumerable<Book>>().Result;
-
-            this.dataGridView2.DataSource = book;
-
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: "store",
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
-
-                var consumer = new EventingBasicConsumer(channel);
-
-                channel.BasicConsume("store", false, "", false, false, null, consumer);
-                //listView1.Items.Add(channel.BasicConsume("store", false, "", false, false, null, consumer).ToString());
-                consumer.Model.MessageCount("store");
-                consumer.Received += (model, ea) =>
-                {
-                    var body = ea.Body;
-                    var message = Encoding.UTF8.GetString(body);
-                    //listView1.Items.Add(message);
-                    int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
-                    string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
-                    int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
-                    //listView1.Items.Add( orderid.ToString());
-
-                    //if (client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Store)
-                    //{
-                        if (listView1.InvokeRequired)
-                        {
-
-                            listView1.Invoke((MethodInvoker)delegate ()
-                            {
-                                listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
-                            });
-                        }
-                        else
-                        {
-                            listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
-                        }
-                   // }
-                    
-                };
-            }
-
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -100,6 +48,7 @@ namespace GUI_Store
                 {
                     OrderCreation orderCreation = new OrderCreation(response.Content.ReadAsAsync<Book>().Result.Id);
                     orderCreation.ShowDialog();
+                    UpdateListBook(); 
                 }
                 else
                 {
@@ -128,6 +77,8 @@ namespace GUI_Store
                 {
                     OrderCreation orderCreation = new OrderCreation(Convert.ToInt32(dataGridView2.Rows[dataGridView2.CurrentCell.RowIndex].Cells[0].Value.ToString()));
                     orderCreation.ShowDialog();
+                    UpdateListBook();
+
                 }
                 else
                 {
@@ -161,7 +112,7 @@ namespace GUI_Store
                         ClientId = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId,
                         Client = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Client,
                         Quantity = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity,
-                        GUID = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.GUID,
+                        GUID = orderid,
                         OrderType = OrderTypeEnum.Store,
                         OrderStatus = OrderStatusEnum.Dispatched,
                         DispatchOccurence = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.DispatchOccurence,
@@ -195,6 +146,76 @@ namespace GUI_Store
 
                 //}
             }
+        }
+
+        public async void UpdateListBook()
+        {
+            HttpClient client = new HttpClient();
+
+            client.BaseAddress = new Uri("http://localhost:2222/");
+
+            var response = await client.GetAsync("api/Book/GetBooks");
+            var book = response.Content.ReadAsAsync<IEnumerable<Book>>().Result;
+            dataGridView2.DataSource = book; 
+            
+        }
+
+        private void StoreArea_Load(object sender, EventArgs e)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:2222/");
+
+
+
+            HttpResponseMessage responsebook = client.GetAsync("api/Book/GetBooks").Result;
+            var book = responsebook.Content.ReadAsAsync<IEnumerable<Book>>().Result;
+
+            this.dataGridView2.DataSource = book;
+
+
+
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+                channel.QueueDeclare(queue: "store",
+                                 durable: false,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+                var consumer = new EventingBasicConsumer(channel);
+
+                channel.BasicConsume("store", false, "", false, false, null, consumer);
+                consumer.Model.MessageCount("store");
+                consumer.Received += (model, ea) =>
+                {
+                    var body = ea.Body;
+                    var message = Encoding.UTF8.GetString(body);
+                    int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
+                    string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
+                    int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
+
+                    if (client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Store)
+                    {
+                        if (listView1.InvokeRequired)
+                        {
+
+                            listView1.Invoke((MethodInvoker)delegate ()
+                            {
+                                listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
+                            });
+                        }
+                        else
+                        {
+                            listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
+                        }
+                    }
+
+                };
+            }
+
         }
 
     }
