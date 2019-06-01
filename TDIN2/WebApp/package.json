@@ -9,6 +9,7 @@
     "@types/react-hot-loader": "3.0.3",
     "@types/react-router": "4.0.12",
     "@types/react-router-dom": "4.0.5",
+    "@types/request": "^2.48.1",
     "@types/webpack-env": "1.13.0",
     "aspnet-webpack": "^2.0.3",
     "aspnet-webpack-react": "^3.0.0",
@@ -32,6 +33,6 @@
     "webpack-hot-middleware": "2.18.2"
   },
   "dependencies": {
-    "axios": "^0.18.0"
+    "request": "^2.88.0"
   }
 }

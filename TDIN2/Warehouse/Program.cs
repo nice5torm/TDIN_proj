@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static Common.Services.MessageQueue;
 
@@ -24,37 +25,50 @@ namespace Warehouse
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "warehouse", durable: true, exclusive: false, autoDelete: false, arguments: null);
+                channel.QueueDeclare(queue: "warehouse",
+                                     durable: true,
+                                     exclusive: false,
+                                     autoDelete: false,
+                                     arguments: null);
 
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
+                var consumer1 = new EventingBasicConsumer(channel);
+                consumer1.Received += (model, ea) =>
                 {
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
                     Console.WriteLine(" [x] Received {0}", message);
                 };
-                channel.BasicConsume(queue: "warehouse", autoAck: false, consumer: consumer);
-
-                Console.WriteLine(" Press [1] to accept and send the first order.");
+                channel.BasicConsume(queue: "warehouse",
+                                     autoAck: false,
+                                     consumer: consumer1);
 
                 Console.WriteLine(" Press [enter] to exit.");
 
                 string input = Console.ReadLine();
 
-                if (!string.IsNullOrEmpty(input))
+                if ("1" == input)
                 {
-                    if(input.Equals("1"))
-                    {
-                        channel.QueueDeclare(queue: "warehouse", durable: true, exclusive: false, autoDelete: false, arguments: null);
+                    channel.QueueDeclare(queue: "warehouse",
+                                              durable: true,
+                                              exclusive: false,
+                                              autoDelete: false,
+                                              arguments: null);
 
-                        channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+                    channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
 
-                        var consumer1 = new EventingBasicConsumer(channel);
-                        consumer1.Received += (model, ea) =>
+                        Console.WriteLine(" [*] Waiting for messages.");
+
+                        var consumer = new EventingBasicConsumer(channel);
+                        consumer.Received += (model, ea) =>
                         {
                             var body = ea.Body;
                             var message = Encoding.UTF8.GetString(body);
-                            Console.WriteLine(" [x] Dispached {0}", message);
+                            Console.WriteLine(" [x] Received {0}", message);
+
+                            Thread.Sleep(1000);
+
+                            Console.WriteLine(" [x] Done");
+
                             int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
                             string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
                             int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
@@ -67,18 +81,97 @@ namespace Warehouse
 
                                 MessageQueue.SendMessageToStore(title, quantity, order.GUID);
                             }
-                            else if(client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Web)
+                            else if (client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Web)
                             {
                                 Order order = CreateOrderWeb(orderid);
 
                                 client.PutAsJsonAsync("api/Order/EditOrder", order);
                             }
+
                             channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                         };
-                        channel.BasicConsume(queue: "warehouse", autoAck: false, consumer: consumer1);
-                    }
+                        channel.BasicConsume(queue: "warehouse",
+                                             autoAck: false,
+                                             consumer: consumer);
+
+                        Console.WriteLine(" Press [enter] to exit.");
+                        Console.ReadLine();
                 }
+
             }
+           
+            
+
+
+
+
+
+
+
+
+
+            //HttpClient client = new HttpClient();
+            //client.BaseAddress = new Uri("http://localhost:2222/");
+
+            //var factory = new ConnectionFactory() { HostName = "localhost" };
+            //using (var connection = factory.CreateConnection())
+            //using (var channel = connection.CreateModel())
+            //{
+            //    channel.QueueDeclare(queue: "warehouse", durable: true, exclusive: false, autoDelete: false, arguments: null);
+
+            //    var consumer = new EventingBasicConsumer(channel);
+            //    consumer.Received += (model, ea) =>
+            //    {
+            //        var body = ea.Body;
+            //        var message = Encoding.UTF8.GetString(body);
+            //        Console.WriteLine(" [x] Received {0}", message);
+            //    };
+            //    channel.BasicConsume(queue: "warehouse", autoAck: false, consumer: consumer);
+
+            //    Console.WriteLine(" Press [1] to accept and send the first order.");
+
+            //    Console.WriteLine(" Press [enter] to exit.");
+
+            //    string input = Console.ReadLine();
+
+            //    if (!string.IsNullOrEmpty(input))
+            //    {
+            //        if(input.Equals("1"))
+            //        {
+            //            channel.QueueDeclare(queue: "warehouse", durable: true, exclusive: false, autoDelete: false, arguments: null);
+
+            //            channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+
+            //            var consumer1 = new EventingBasicConsumer(channel);
+            //            consumer1.Received += (model, ea) =>
+            //            {
+            //                var body = ea.Body;
+            //                var message = Encoding.UTF8.GetString(body);
+            //                Console.WriteLine(" [x] Dispached {0}", message);
+            //                int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
+            //                string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
+            //                int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
+
+            //                if (client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Store)
+            //                {
+            //                    Order order = CreateOrderStore(orderid);
+
+            //                    client.PutAsJsonAsync("api/Order/EditOrder", order);
+
+            //                    MessageQueue.SendMessageToStore(title, quantity, order.GUID);
+            //                }
+            //                else if(client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Web)
+            //                {
+            //                    Order order = CreateOrderWeb(orderid);
+
+            //                    client.PutAsJsonAsync("api/Order/EditOrder", order);
+            //                }
+            //                channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+            //            };
+            //            channel.BasicConsume(queue: "warehouse", autoAck: false, consumer: consumer1);
+            //        }
+            //    }
+            //}
         }
 
         public static Order CreateOrderWeb(int orderid)

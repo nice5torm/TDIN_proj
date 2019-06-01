@@ -34,71 +34,75 @@ namespace StoreGUI
                 var factory = new ConnectionFactory() { HostName = "localhost" };
 
                 using (var connection = factory.CreateConnection())
-                using (var channel = connection.CreateModel())           
+                using (var channel = connection.CreateModel())
                 {
                     channel.QueueDeclare(queue: "store", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-                    var consumer1 = new EventingBasicConsumer(channel);
-                    consumer1.Received += (model, ea) =>
+                    var consumer = new EventingBasicConsumer(channel);
+                    consumer.Received += (model, ea) =>
                     {
                         var body = ea.Body;
                         var message = Encoding.UTF8.GetString(body);
                         Console.WriteLine(" [x] Received {0}", message);
                     };
-
-                    channel.BasicConsume(queue: "store", autoAck: false, consumer: consumer1);
+                    channel.BasicConsume(queue: "store", autoAck: false, consumer: consumer);
 
                     Console.WriteLine(" Press [1] to accept and send the first order.");
 
-                    Console.WriteLine(" Press [enter] to exit.");
+                    //Console.WriteLine(" Press [enter] to exit.");
                 }
                 string input = Console.ReadLine();
 
-                if (!string.IsNullOrEmpty(input))
+                if ("1" == input)
                 {
-                    if (input.Equals("1"))
+                var factory1 = new ConnectionFactory() { HostName = "localhost" };
+
+                    using (var connection = factory1.CreateConnection())
+                    using (var channel = connection.CreateModel())
                     {
-                        var factory1 = new ConnectionFactory() { HostName = "localhost" };
+                        channel.QueueDeclare(queue: "store", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-                        using (var connection = factory1.CreateConnection())
-                        using (var channel = connection.CreateModel())
+                        channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+
+
+                    var consumer = new EventingBasicConsumer(channel);
+                        consumer.Received += (model, ea) =>
                         {
-                            channel.QueueDeclare(queue: "store", durable: false, exclusive: false, autoDelete: false, arguments: null);
+                            var body = ea.Body;
+                            var message = Encoding.UTF8.GetString(body);
+                            Thread.Sleep(1000);
 
-                            channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
 
-                            var consumer = new EventingBasicConsumer(channel);
-                            consumer.Received += (model, ea) =>
-                            {
-                                var body = ea.Body;
-                                var message = Encoding.UTF8.GetString(body);
-                                Console.WriteLine(" [x] Dispached {0}", message);
+                            Console.WriteLine(" [x] Dispached {0}", message);
 
-                                int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
-                                string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
-                                int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
+                            int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
+                            string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
+                            int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
 
-                                Order order = CreateOrder(orderid);
-                                Book book = CreateBook(title);
+                            Order order = CreateOrder(orderid);
+                            Book book = CreateBook(title);
 
-                                client.PutAsJsonAsync("api/Order/EditOrder", order);
+                            client.PutAsJsonAsync("api/Order/EditOrder", order);
 
-                                client.PutAsJsonAsync("api/Book/EditBook", book);
+                            client.PutAsJsonAsync("api/Book/EditBook", book);
 
-                                int clientId = Convert.ToInt32(client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId);
-                                string emailClient = client.GetAsync("api/Client/GetClient?id=" + clientId).Result.Content.ReadAsAsync<Client>().Result.Email;
-                                int quantityEmail = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity;
-                                double priceEmail = client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Price;
+                            int clientId = Convert.ToInt32(client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId);
+                            string emailClient = client.GetAsync("api/Client/GetClient?id=" + clientId).Result.Content.ReadAsAsync<Client>().Result.Email;
+                            int quantityEmail = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity;
+                            double priceEmail = client.GetAsync("api/Book/GetBookByTitle?title=" + title).Result.Content.ReadAsAsync<Book>().Result.Price;
 
-                                EmailSender.SendEmail(emailClient, "Order Status",
-                                    "The book you ordered " + title + " which cost is " + priceEmail + ", and you ordered " + quantityEmail + ". The total price is " + priceEmail * quantityEmail + " . The Order status is Dispached on the date: " + DateTime.Now.AddDays(1));
+                            EmailSender.SendEmail(emailClient, "Order Status",
+                                "The book you ordered " + title + " which cost is " + priceEmail + ", and you ordered " + quantityEmail + ". The total price is " + priceEmail * quantityEmail + " . The Order status is Dispached on the date: " + DateTime.Now.AddDays(1));
 
-                                channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
-                            };
-                            channel.BasicConsume(queue: "warehouse", autoAck: false, consumer: consumer);
-                        }
-                    }
+                            channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                        };
+                        channel.BasicConsume(queue: "store", autoAck: false, consumer: consumer);
+                    //Console.WriteLine(" Press [enter] to exit.");
+                    Console.ReadLine();
+
                 }
+                }
+
             });
 
             t1.Start();

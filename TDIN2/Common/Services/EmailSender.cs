@@ -35,7 +35,7 @@ namespace Common.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace.ToString());
+                //Console.WriteLine(ex.StackTrace.ToString());
             }
         }
     }
