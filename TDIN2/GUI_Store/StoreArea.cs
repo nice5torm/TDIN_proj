@@ -22,7 +22,6 @@ namespace GUI_Store
 {
     public partial class StoreArea : Form
     {
-
         public StoreArea()
         {
             HttpClient client = new HttpClient();
@@ -148,7 +147,7 @@ namespace GUI_Store
             }
         }
 
-        public async void UpdateListBook()
+        private async void UpdateListBook()
         {
             HttpClient client = new HttpClient();
 
@@ -160,12 +159,59 @@ namespace GUI_Store
             
         }
 
+        private void UpdateListOrders()
+        {
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:2222/");
+
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+                channel.QueueDeclare(queue: "store",
+                                 durable: false,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+                var consumer = new EventingBasicConsumer(channel);
+
+                //channel.BasicConsume("store", false, "", false, false, null, consumer);
+                //consumer.Model.MessageCount("store");
+                consumer.Received += (model, ea) =>
+                {
+                    var body = ea.Body;
+                    var message = Encoding.UTF8.GetString(body);
+                    int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
+                    string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
+                    int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
+
+                    if (client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Store)
+                    {
+                        if (listView1.InvokeRequired)
+                        {
+                            listView1.Invoke((MethodInvoker)delegate ()
+                            {
+                                listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
+                            });
+                        }
+                        else
+                        {
+                            listView1.Items.Add(new ListViewItem(new string[] { title, quantity.ToString(), orderid.ToString() }));
+                        }
+                    }
+
+                };
+                channel.BasicConsume("store", false, "", false, false, null, consumer: consumer);
+            }
+        }
+
         private void StoreArea_Load(object sender, EventArgs e)
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:2222/");
-
-
 
             HttpResponseMessage responsebook = client.GetAsync("api/Book/GetBooks").Result;
             var book = responsebook.Content.ReadAsAsync<IEnumerable<Book>>().Result;
@@ -186,9 +232,8 @@ namespace GUI_Store
                                  arguments: null);
 
                 var consumer = new EventingBasicConsumer(channel);
-
-                channel.BasicConsume("store", false, "", false, false, null, consumer);
-                consumer.Model.MessageCount("store");
+                //channel.BasicConsume("store", false, "", false, false, null, consumer);
+                //consumer.Model.MessageCount("store");
                 consumer.Received += (model, ea) =>
                 {
                     var body = ea.Body;
@@ -214,6 +259,7 @@ namespace GUI_Store
                     }
 
                 };
+                channel.BasicConsume("store", false, "", false, false, null, consumer: consumer);
             }
 
         }

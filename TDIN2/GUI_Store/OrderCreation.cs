@@ -17,11 +17,9 @@ namespace GUI_Store
     public partial class OrderCreation : Form
     {
         public int publicid;
-        public HttpClient client = new HttpClient();
 
         public OrderCreation(int id)
         {
-            //client.BaseAddress = new Uri("http://localhost:2222/");
             publicid = id;
 
             InitializeComponent();
@@ -30,7 +28,6 @@ namespace GUI_Store
         private async void button1_Click(object sender, EventArgs e)
         {
             HttpClient client = new HttpClient();
-        
             client.BaseAddress = new Uri("http://localhost:2222/");
 
             if(client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.IsSuccessStatusCode)
@@ -161,7 +158,6 @@ namespace GUI_Store
         private async void BookInfoLoad(int id)
         {
             HttpClient client = new HttpClient();
-
             client.BaseAddress = new Uri("http://localhost:2222/");
 
             var response = await client.GetAsync("api/Book/GetBook?id=" + id);
@@ -174,7 +170,6 @@ namespace GUI_Store
         private void OrderCreation_Load(object sender, EventArgs e)
         {
             HttpClient client = new HttpClient();
-
             client.BaseAddress = new Uri("http://localhost:2222/");
 
             this.stock.Text = client.GetAsync("api/Book/GetBook?id=" + publicid).Result.Content.ReadAsAsync<Book>().Result.Amount.ToString();
