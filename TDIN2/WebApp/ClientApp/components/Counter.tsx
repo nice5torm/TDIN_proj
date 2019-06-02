@@ -1,23 +1,41 @@
 import * as React from 'react';
-import * as request from 'request';
+import axios from 'axios';
 import { RouteComponentProps } from 'react-router';
-import { Order } from './Models';
-import { Client } from './Models';
 
-interface FetchDataExampleState {
-    readonly orders: Order[];
-    readonly client: Client;
-    email: string; 
+interface Client {
+    id: number;
+    name: string;
+    email: string;
+    ordersClient: Order[];
+}
+interface Order {
+    guid: number;
+    book: Book; 
+    quantity: number;
+    orderStatus: string;
+    dispatchedDate: any;
+    dispatchOccurence: any;
+    orderType: string;
+}
+interface Book {
+    id: number;
+    title: string;
+    price: number;
+    amount: number; 
 }
 
-export class Counter extends React.Component<RouteComponentProps<{}>, FetchDataExampleState> {
+interface FetchDataExampleState {
+    email: string; 
+    orders: Order[];
+}
+
+export class Orders extends React.Component<RouteComponentProps<{}>, FetchDataExampleState> {
     constructor() {
         super();
 
         this.state = {
             email: '',
-            orders: [],
-            client: new Client(null)
+            orders: []
         };
     }
 
@@ -29,33 +47,38 @@ export class Counter extends React.Component<RouteComponentProps<{}>, FetchDataE
         this.setState(
             { email: e.target.value }
         )
-        request.get("http://localhost:2222/api/Client/GetClientByEmail?email=$this.state.email$", options, (response: any, body: any) => {
-            let client = new Client(body);
+        axios.request<Client>({
+            url: 'http://localhost:2222/api/Client/GetClientByEmail?email=' + this.state.email
         })
+            .then((response) => {
+            this.setState({ orders: response.data.ordersClient })
+            console.log(response.data.ordersClient);
+        })
+                
     }
 
     private static renderOrdersTable(orders: Order[]) {
         return <table className='table'>
             <thead>
                 <tr>
-                    <th>id</th>
-                    <th>title</th>
-                    <th>quantity</th>
-                    <th>orderType</th>
-                    <th>orderStatus</th>
-                    <th>dispatchDate</th>
-                    <th>dispatchOccurence</th>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Quantity</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Dispatched Date</th>
+                    <th>Dispatch Occurence</th>
                 </tr>
             </thead>
             <tbody>
                 {orders.map(order =>
-                    <tr key={order.id}>
-                        <td>{order.id}</td>
-                        <td>{order.title}</td>
+                    <tr key={order.guid}>
+                        <td>{order.guid}</td>
+                        <td>{order.book.title}</td>
                         <td>{order.quantity}</td>
                         <td>{order.orderType}</td>
                         <td>{order.orderStatus}</td>
-                        <td>{order.dispatchDate}</td>
+                        <td>{order.dispatchedDate}</td>
                         <td>{order.dispatchOccurence}</td>
                     </tr>
                 )}
@@ -73,7 +96,7 @@ export class Counter extends React.Component<RouteComponentProps<{}>, FetchDataE
                 <label>
                     Email:
                     <input
-                        type="email"
+                        type="string"
                         name="email"
                         onChange={e => this.setState({ email: e.target.value })}
                     />
@@ -81,7 +104,7 @@ export class Counter extends React.Component<RouteComponentProps<{}>, FetchDataE
                 <input type="submit" value="Submit" />
             </form>
             <div id="orders">
-                {Counter.renderOrdersTable(this.state.orders)}
+                {Orders.renderOrdersTable(this.state.orders)}
             </div>
         </div>);
     }

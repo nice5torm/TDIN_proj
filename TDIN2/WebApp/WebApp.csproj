@@ -21,10 +21,14 @@
 
   <ItemGroup>
     <!-- Files not to publish (note that the 'dist' subfolders are re-added below) -->
+    <Compile Remove="ClientApp\NovaPasta1\**" />
     <Content Remove="ClientApp\**" />
+    <EmbeddedResource Remove="ClientApp\NovaPasta1\**" />
+    <None Remove="ClientApp\NovaPasta1\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\components\CreateOrder.tsx" />
     <None Remove="ClientApp\components\Models.tsx" />
   </ItemGroup>
 
@@ -33,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\components\Models.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\CreateOrder.tsx" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">
@@ -65,5 +69,7 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
+
+  <ProjectExtensions><VisualStudio><UserProperties package_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

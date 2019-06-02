@@ -31,33 +31,10 @@ namespace StoreGUI
                 HttpClient client = new HttpClient();
                 client.BaseAddress = new Uri("http://localhost:2222/");
 
+               
                 var factory = new ConnectionFactory() { HostName = "localhost" };
 
-                using (var connection = factory.CreateConnection())
-                using (var channel = connection.CreateModel())
-                {
-                    channel.QueueDeclare(queue: "store", durable: false, exclusive: false, autoDelete: false, arguments: null);
-
-                    var consumer = new EventingBasicConsumer(channel);
-                    consumer.Received += (model, ea) =>
-                    {
-                        var body = ea.Body;
-                        var message = Encoding.UTF8.GetString(body);
-                        Console.WriteLine(" [x] Received {0}", message);
-                    };
-                    channel.BasicConsume(queue: "store", autoAck: false, consumer: consumer);
-
-                    Console.WriteLine(" Press [1] to accept and send the first order.");
-
-                    //Console.WriteLine(" Press [enter] to exit.");
-                }
-                string input = Console.ReadLine();
-
-                if ("1" == input)
-                {
-                var factory1 = new ConnectionFactory() { HostName = "localhost" };
-
-                    using (var connection = factory1.CreateConnection())
+                    using (var connection = factory.CreateConnection())
                     using (var channel = connection.CreateModel())
                     {
                         channel.QueueDeclare(queue: "store", durable: false, exclusive: false, autoDelete: false, arguments: null);
@@ -97,10 +74,9 @@ namespace StoreGUI
                             channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                         };
                         channel.BasicConsume(queue: "store", autoAck: false, consumer: consumer);
-                    //Console.WriteLine(" Press [enter] to exit.");
+                    Console.WriteLine(" Press [enter] to exit.");
                     Console.ReadLine();
 
-                }
                 }
 
             });

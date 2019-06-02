@@ -24,12 +24,15 @@ namespace WebApp.Data.Repositories
         public List<Client> GetListWithRelated()
         {
             return Context.Clients
+                .Include(c => c.OrdersClient)
                 .ToList();
         }
 
         public Client GetByEmail(string email)
         {
             return Context.Clients
+                .Include(c => c.OrdersClient).ThenInclude(o => o.Book)
+                .Include(c => c.OrdersClient)
                 .FirstOrDefault(c => c.Email == email);
         }
     }
