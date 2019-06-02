@@ -46,6 +46,8 @@ namespace Warehouse
 
                             Console.WriteLine(" [x] Done");
 
+                            channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+
                             int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
                             string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
                             int orderid = JsonConvert.DeserializeObject<WarehouseMessage>(message).orderid;
@@ -56,7 +58,7 @@ namespace Warehouse
 
                                 client.PutAsJsonAsync("api/Order/EditOrder", order);
 
-                                MessageQueue.SendMessageToStore(title, quantity, order.GUID);
+                                MessageQueue.SendMessageToStore(title, quantity, order.Id);
                             }
                             else if (client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType == OrderTypeEnum.Web)
                             {
@@ -65,7 +67,7 @@ namespace Warehouse
                                 client.PutAsJsonAsync("api/Order/EditOrder", order);
                             }
 
-                            channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                            
                         };
                         channel.BasicConsume(queue: "warehouse",
                                              autoAck: false,
@@ -91,7 +93,7 @@ namespace Warehouse
                 ClientId = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId,
                 Client = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Client,
                 Quantity = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity,
-                GUID = orderid,
+                Id = orderid,
                 OrderType = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType,
                 OrderStatus = OrderStatusEnum.Dispatched,
                 DispatchedDate = DateTime.Now.AddDays(1)
@@ -110,7 +112,7 @@ namespace Warehouse
                 ClientId = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId,
                 Client = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Client,
                 Quantity = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity,
-                GUID = orderid,
+                Id = orderid,
                 OrderType = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.OrderType,
                 OrderStatus = OrderStatusEnum.DispatchOccurence,
                 DispatchOccurence = DateTime.Now.AddDays(2)

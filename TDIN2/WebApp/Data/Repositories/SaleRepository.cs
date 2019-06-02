@@ -16,7 +16,7 @@ namespace WebApp.Data.Repositories
         public Sale GetWithRelated(int id)
         {
             return Context.Sales
-                .FirstOrDefault(s => s.GUID == id);
+                .FirstOrDefault(s => s.Id == id);
         }
 
         public List<Sale> GetListWithRelatedBook(int Bid)

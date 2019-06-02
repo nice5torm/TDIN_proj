@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebApp.Migrations
 {
-    public partial class Inital : Migration
+    public partial class Nova : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,7 @@ namespace WebApp.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    GUID = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DispatchedDate = table.Column<DateTime>(nullable: false),
                     DispatchOccurence = table.Column<DateTime>(nullable: false),
@@ -54,7 +54,7 @@ namespace WebApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.GUID);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Orders_Books_BookId",
                         column: x => x.BookId,
@@ -73,7 +73,7 @@ namespace WebApp.Migrations
                 name: "Sales",
                 columns: table => new
                 {
-                    GUID = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Quantity = table.Column<int>(nullable: false),
                     ClientId = table.Column<int>(nullable: true),
@@ -81,7 +81,7 @@ namespace WebApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sales", x => x.GUID);
+                    table.PrimaryKey("PK_Sales", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Sales_Books_BookId",
                         column: x => x.BookId,
@@ -100,11 +100,6 @@ namespace WebApp.Migrations
                 table: "Books",
                 columns: new[] { "Id", "Amount", "Price", "Title" },
                 values: new object[] { 1, 2, 12.0, "Livro" });
-
-            migrationBuilder.InsertData(
-                table: "Books",
-                columns: new[] { "Id", "Amount", "Price", "Title" },
-                values: new object[] { 2, 4, 20.0, "Dicionário" });
 
             migrationBuilder.InsertData(
                 table: "Clients",

@@ -33,15 +33,23 @@ namespace StoreGUI
             {
                 if (numericUpDown1.Value <= Convert.ToInt32(stock.Text))
                 {
-                    Sale sale = CreateSale(); 
+
+                    Sale sale = CreateSale();
+
 
                     Book book = CreateBook(); 
 
                     if (client.PostAsJsonAsync("api/Sale/CreateSale", sale).Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Sale made with sucess!", "Sucess sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        
                         await client.PutAsJsonAsync("api/Book/EditBook", book);
                     }
+
+                    Printer printer = new Printer(booktitle.Text, price.Text, numericUpDown1.Value.ToString(),  textBox1.Text, textBox2.Text, textBox3.Text, Convert.ToString(sale.Quantity * Convert.ToInt32(price.Text)));
+                    printer.ShowDialog();
+
+
                     BookInfoLoad(publicid);
                 }
                 else
@@ -54,8 +62,8 @@ namespace StoreGUI
                     {
                         MessageBox.Show("Order made with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        //Message Queue
-                        MessageQueue.SendMessageToWarehouse(booktitle.Text, Convert.ToInt32(numericUpDown1.Value) + 10, result.Content.ReadAsAsync<Order>().Result.GUID);
+                        //MessageQueue
+                        MessageQueue.SendMessageToWarehouse(booktitle.Text, Convert.ToInt32(numericUpDown1.Value) + 10, result.Content.ReadAsAsync<Order>().Result.Id);
 
                         //Email Sender
                         EmailSender.SendEmail(textBox2.Text, "Order Creation Information",
@@ -68,17 +76,21 @@ namespace StoreGUI
                 if (numericUpDown1.Value <= Convert.ToInt32(stock.Text))
                 {
                     Sale sale = CreateSaleNewClient();
-
+                   
                     Book book = CreateBook();
 
                     if (client.PostAsJsonAsync("api/Sale/CreateSale", sale).Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Sale made with sucess!", "Sucess Sale", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                        
                         await client.PutAsJsonAsync("api/Book/EditBook", book);
                     }
-                    BookInfoLoad(publicid);
 
+                    Printer printer = new Printer(booktitle.Text, price.Text, numericUpDown1.Value.ToString(), textBox1.Text, textBox2.Text, textBox3.Text, Convert.ToString(sale.Quantity * Convert.ToInt32(price.Text)));
+                    printer.ShowDialog();
+
+
+                    BookInfoLoad(publicid);
                 }
                 else
                 {
@@ -88,8 +100,10 @@ namespace StoreGUI
                     if (result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         MessageBox.Show("Order made with sucess!", "Sucess order", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                         //MessageQueue
-                        MessageQueue.SendMessageToWarehouse(booktitle.Text, Convert.ToInt32(numericUpDown1.Value) + 10, result.Content.ReadAsAsync<Order>().Result.GUID);
+                        MessageQueue.SendMessageToWarehouse(booktitle.Text, Convert.ToInt32(numericUpDown1.Value) + 10, result.Content.ReadAsAsync<Order>().Result.Id);
+
                         //Send Email 
                         EmailSender.SendEmail(textBox2.Text, "Order Creation Information",
                            "You just ordered the book: " + booktitle.Text + "the cost is " + price.Text + ". You ordered " + numericUpDown1.Value + ". The total price is " + Convert.ToInt32(numericUpDown1.Value) * Convert.ToInt32(price.Text) + " . The Order status is  Waiting Expedition");
@@ -118,7 +132,7 @@ namespace StoreGUI
 
         }
 
-        private Sale CreateSaleNewClient()
+        public Sale CreateSaleNewClient()
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:2222/");
@@ -134,9 +148,10 @@ namespace StoreGUI
                 },
                 BookId = client.GetAsync("api/Book/GetBookByTitle?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
             };
+
             return sale; 
         }
-        private Sale CreateSale()
+        public Sale CreateSale()
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:2222/");
@@ -147,6 +162,8 @@ namespace StoreGUI
                 ClientId = client.GetAsync("api/Client/GetClientByEmail?email=" + textBox2.Text).Result.Content.ReadAsAsync<Client>().Result.ID,
                 BookId = client.GetAsync("api/Book/GetBookByTitle?title=" + booktitle.Text).Result.Content.ReadAsAsync<Book>().Result.Id
             };
+
+            
             return sale; 
         }
         private Order CreateOrderNewClient()

@@ -10,7 +10,7 @@ namespace Common.Models
     public class Order
     {
         [Key]
-        public int GUID { get; set; }
+        public int Id { get; set; }
 
         public DateTime DispatchedDate { get; set; }
 

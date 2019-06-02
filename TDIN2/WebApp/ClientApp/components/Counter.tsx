@@ -9,7 +9,7 @@ interface Client {
     ordersClient: Order[];
 }
 interface Order {
-    guid: number;
+    id: number;
     book: Book; 
     quantity: number;
     orderStatus: string;
@@ -72,8 +72,8 @@ export class Orders extends React.Component<RouteComponentProps<{}>, FetchDataEx
             </thead>
             <tbody>
                 {orders.map(order =>
-                    <tr key={order.guid}>
-                        <td>{order.guid}</td>
+                    <tr key={order.id}>
+                        <td>{order.id}</td>
                         <td>{order.book.title}</td>
                         <td>{order.quantity}</td>
                         <td>{order.orderType}</td>
