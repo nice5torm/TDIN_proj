@@ -22,9 +22,12 @@
   <ItemGroup>
     <!-- Files not to publish (note that the 'dist' subfolders are re-added below) -->
     <Compile Remove="ClientApp\NovaPasta1\**" />
+    <Compile Remove="ClientApp\services\**" />
     <Content Remove="ClientApp\**" />
     <EmbeddedResource Remove="ClientApp\NovaPasta1\**" />
+    <EmbeddedResource Remove="ClientApp\services\**" />
     <None Remove="ClientApp\NovaPasta1\**" />
+    <None Remove="ClientApp\services\**" />
   </ItemGroup>
 
   <ItemGroup>

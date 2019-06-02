@@ -1,10 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Common.Models;
-
 
 namespace WebApp.Data
 {
@@ -26,15 +22,13 @@ namespace WebApp.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Book>().HasData(
-                new Book { Id = 1, Title = "Livro", Price = 12, Amount = 2}
+                new Book { Id = 1, Title = "Livro", Price = 12, Amount = 12 },
+                new Book { Id = 2, Title = "Dicionário", Price = 16, Amount = 27 },
+                new Book { Id = 3, Title = "Romance", Price = 20, Amount = 6}
                 );
             modelBuilder.Entity<Client>().HasData(
                 new Client { ID = 1, Name = "Maria", Address = "Rua 123", Email = "maria@mail.com", OrdersClient = new List<Order>() }
                 );
-
         }
     }
-
-
-
 }
