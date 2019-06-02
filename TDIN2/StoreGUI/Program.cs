@@ -41,18 +41,16 @@ namespace StoreGUI
 
                         channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
 
-                    Console.WriteLine(" [*] Waiting for messages.");
+
                     var consumer = new EventingBasicConsumer(channel);
                         consumer.Received += (model, ea) =>
                         {
                             var body = ea.Body;
                             var message = Encoding.UTF8.GetString(body);
-
-                            Console.WriteLine(" [x] Received {0}", message);
-
                             Thread.Sleep(1000);
+
+
                             Console.WriteLine(" [x] Dispached {0}", message);
-                            channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
 
                             int quantity = JsonConvert.DeserializeObject<WarehouseMessage>(message).quantity;
                             string title = JsonConvert.DeserializeObject<WarehouseMessage>(message).title;
@@ -73,6 +71,7 @@ namespace StoreGUI
                             EmailSender.SendEmail(emailClient, "Order Status",
                                 "The book you ordered " + title + " which cost is " + priceEmail + ", and you ordered " + quantityEmail + ". The total price is " + priceEmail * quantityEmail + " . The Order status is Dispached on the date: " + DateTime.Now.AddDays(1));
 
+                            channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                         };
                         channel.BasicConsume(queue: "store", autoAck: false, consumer: consumer);
                     Console.WriteLine(" Press [enter] to exit.");
@@ -100,7 +99,7 @@ namespace StoreGUI
                 ClientId = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.ClientId,
                 Client = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Client,
                 Quantity = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.Quantity,
-                Id = orderid,
+                GUID = orderid,
                 OrderType = OrderTypeEnum.Store,
                 OrderStatus = OrderStatusEnum.Dispatched,
                 DispatchOccurence = client.GetAsync("api/Order/GetOrder?id=" + orderid).Result.Content.ReadAsAsync<Order>().Result.DispatchOccurence,

@@ -42,6 +42,13 @@ namespace WebApp.Migrations
                             Amount = 2,
                             Price = 12.0,
                             Title = "Livro"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Amount = 4,
+                            Price = 20.0,
+                            Title = "Dicionário"
                         });
                 });
 
@@ -73,7 +80,7 @@ namespace WebApp.Migrations
 
             modelBuilder.Entity("Common.Models.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("GUID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -91,7 +98,7 @@ namespace WebApp.Migrations
 
                     b.Property<int>("Quantity");
 
-                    b.HasKey("Id");
+                    b.HasKey("GUID");
 
                     b.HasIndex("BookId");
 
@@ -102,7 +109,7 @@ namespace WebApp.Migrations
 
             modelBuilder.Entity("Common.Models.Sale", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("GUID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -112,7 +119,7 @@ namespace WebApp.Migrations
 
                     b.Property<int>("Quantity");
 
-                    b.HasKey("Id");
+                    b.HasKey("GUID");
 
                     b.HasIndex("BookId");
 

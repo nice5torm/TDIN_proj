@@ -1,6 +1,7 @@
 ﻿import * as React from 'react';
 import axios from 'axios';
 import { RouteComponentProps, RouteProps } from 'react-router';
+import { MessageQueue } from '';
 
 interface Client {
     id: number;
@@ -15,7 +16,7 @@ interface Book {
     amount: number;
 }
 interface Order {
-    id: number; 
+    guid: number; 
     bookId: number ;
     quantity: number;
     orderStatus: number;
@@ -72,52 +73,39 @@ export class CreateOrder extends React.Component<RouteComponentProps<any>, Fetch
 
 
     postOrder(e: any) {
+        e.preventDefault();
         axios.request<Client>({
             url: 'http://localhost:2222/api/Client/GetClientByEmail?email=' + this.state.email
-        }).then((response) => {
-            this.setState({ client: response.data });
-            }) .then(() => {
-            if (this.state.quantity > this.state.book.amount) {
-                axios.post('http://localhost:2222/api/Order/CreateOrderWithMessage', {
-                    bookId: this.props.match.params.id, clientId: this.state.client.id, quantity: this.state.quantity, orderStatus: 0, orderType: 0 //ver state
-                })
-            }
-            else
-            {
-                let date = new Date; 
-                date.setDate(date.getDate() + 1);
-                axios.post('http://localhost:2222/api/Order/CreateOrder', {
-                    bookId: this.props.match.params.id, clientId: this.state.client.id, quantity: this.state.quantity, orderStatus: 1, orderType: 0, dispatchedDate: date.toISOString() //ver state e dispatcheddate
-                });
-
-                axios.put('http://localhost:2222/api/Book/EditBook', { id: this.state.book.id, title: this.state.book.title, amount: this.state.book.amount - this.state.quantity, price: this.state.book.price });
-            }
-            
-            })
-            .catch(()=> {
-                axios.post('http://localhost:2222/api/Client/CreateClient', { email: this.state.email, address: this.state.address, name: this.state.name })
+        })
+            .then((response) => {
+                if (response.status == 200) {
+                    this.setState({client: response.data })
+                }
+                else {
+                    axios.post('http://localhost:2222/api/Client/CreateClient', { email: this.state.email, address: this.state.address, name: this.state.name })
                         .then(() => {
                             axios.request<Client>({
                                 url: 'http://localhost:2222/api/Client/GetClientByEmail?email=' + this.state.email,
                             }).then((response) => {
-                                this.setState({ client: response.data });
+                                this.setState({ client: response.data })
                             })
                         })
-            })
-            .then(() => {
+                }
+            }
+        ).then(() => {
             if (this.state.quantity > this.state.book.amount) {
                 axios.post('http://localhost:2222/api/Order/CreateOrder', {
                     bookId: this.props.match.params.id, clientId: this.state.client.id, quantity: this.state.quantity, orderStatus: 0, orderType: 0 //ver state
+                }).then((response) => {
+                    this.setState({ orderid: response.data.guid })
                 })
+                MessageQueue.sendMessageToWarehouse(this.state.book.title, this.state.quantity, this.state.orderid) //verMessageQueue
             }
             else
             {
-                let date = new Date; 
-                date.setDate(date.getDate() + 1);
                 axios.post('http://localhost:2222/api/Order/CreateOrder', {
-                    bookId: this.props.match.params.id, clientId: this.state.client.id, quantity: this.state.quantity, orderStatus: 1, orderType: 0, dispatchedDate: date.toISOString() //ver state e dispatcheddate
+                    bookId: this.props.match.params.id, clientId: this.state.client.id, quantity: this.state.quantity, orderStatus: 0, orderType: 0  //ver state e dispatcheddate
                 });
-
                 axios.put('http://localhost:2222/api/Book/EditBook', { id: this.state.book.id, title: this.state.book.title, amount: this.state.book.amount - this.state.quantity, price: this.state.book.price });
             }
             

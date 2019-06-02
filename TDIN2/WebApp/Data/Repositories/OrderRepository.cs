@@ -19,7 +19,7 @@ namespace WebApp.Data
             return Context.Orders
                 .Include(o => o.Client)
                 .Include(o => o.Book)
-                .FirstOrDefault(o => o.Id == id);
+                .FirstOrDefault(o => o.GUID == id);
         }
 
         public List<Order> GetListWithRelatedClient(int Cid)

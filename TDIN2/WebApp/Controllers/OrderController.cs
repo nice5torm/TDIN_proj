@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApp.Data;
 using Common.Models;
-using Common.Services;
 
 namespace WebApp.Controllers
 {
@@ -93,12 +92,8 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    //EmailSender.SendEmail(model.Client.Email, "Order Creation Information",
-                    //        "You just ordered the book: " + model.Book.Title + " the cost is " + model.Book.Price + ". You ordered " + model.Quantity + ". The total price is " + model.Quantity * model.Book.Price + " . The Order status is Dispatched at " + model.DispatchedDate.ToShortDateString());
-
                     unitOfWork.Orders.Add(model);
                     unitOfWork.Complete();
-
                     return Ok(model);
                 }
                 catch (Exception)
@@ -107,64 +102,6 @@ namespace WebApp.Controllers
                 }
             }
             
-        }
-        [HttpPost("CreateOrderWithMessage")]
-        public ActionResult<Order> CreateOrderWithMessage([FromBody] Order model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Pedido Inválido");
-            }
-            using (UnitOfWork unitOfWork = new UnitOfWork(_context))
-            {
-                try
-                {
-                    //MessageQueue.SendMessageToWarehouse(model.Book.Title,model.Quantity, model.Id);
-
-                    //EmailSender.SendEmail(model.Client.Email, "Order Creation Information",
-                    //        "You just ordered the book: " + model.Book.Title + " the cost is " + model.Book.Price + ". You ordered " + model.Quantity + ". The total price is " + model.Quantity * model.Book.Price + " . The Order status is  Waiting Expedition");
-
-                    unitOfWork.Orders.Add(model);
-                    unitOfWork.Complete();
-
-                    return Ok(model);
-                }
-                catch (Exception)
-                {
-                    return BadRequest("Erro desconhecido");
-                }
-            }
-
-        }
-   
-
-        [HttpPost("CreateOrderWithMessageAndStock")]
-        public ActionResult<Order> CreateOrderWithMessageAndStock([FromBody] Order model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Pedido Inválido");
-            }
-            using (UnitOfWork unitOfWork = new UnitOfWork(_context))
-            {
-                try
-                {
-                    //MessageQueue.SendMessageToWarehouse(model.Book.Title, model.Quantity + 10, model.Id);
-
-                    //EmailSender.SendEmail(model.Client.Email, "Order Creation Information",
-                    //        "You just ordered the book: " + model.Book.Title + " the cost is " + model.Book.Price + ". You ordered " + model.Quantity + ". The total price is " + model.Quantity * model.Book.Price + " . The Order status is  Waiting Expedition");
-
-                    unitOfWork.Orders.Add(model);
-                    unitOfWork.Complete();
-
-                    return Ok(model);
-                }
-                catch (Exception)
-                {
-                    return BadRequest("Erro desconhecido");
-                }
-            }
-
         }
 
         [HttpPut("EditOrder")]
