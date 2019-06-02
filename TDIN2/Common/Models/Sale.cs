@@ -10,7 +10,7 @@ namespace Common.Models
     public class Sale
     {
         [Key]
-        public int GUID { get; set; }
+        public int Id { get; set; }
 
         public int Quantity { get; set; }
 
